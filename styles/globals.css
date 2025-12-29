@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-[#2A2A2A];
+  }
+  
+  body {
+    @apply antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  p {
+    @apply text-base;
+    line-height: 1.75;
+  }
+  
+  strong {
+    @apply font-semibold;
+  }
+  
+  code {
+    font-feature-settings: normal;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(32, 184, 205, 0.3);
+  color: white;
+}
+
+/* Better text rendering */
+@supports (font-variation-settings: normal) {
+  body {
+    font-variation-settings: 'wght' 400;
+  }
+}
