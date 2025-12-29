@@ -362,7 +362,7 @@ export default function ChatPage() {
         "Ajuda hakerek email ida ba konvite reuniaun negósiu nian.",
         "Tradús testu ne'e ba Portugés: Ha'u hadomi Timor-Leste.",
         "Oinsá situasaun edukasaun daudaun ne'e iha Timor-Leste?",
-        'Favór kuriji ortografia Tetun: "Nia ne kole tanba hlo serbicu barak."',
+        "Favór kuriji ortografia Tetun: Nia ne kole tanba hlo serbicu barak.",
       ];
     }
     // After the user starts typing (non-empty input),
