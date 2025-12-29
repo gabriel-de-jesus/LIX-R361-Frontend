@@ -8,25 +8,12 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
   return (
     <div className="bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center justify-between sticky top-0 z-10">
       <div className="flex-1">
-        {/* Mobile header: always visible on small screens */}
-        <div className="lg:hidden">
-          <h1 className="text-xl font-semibold text-white">
-            Labadain LIX-R361
-          </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            Asistente AI ba Tetun
-          </p>
-        </div>
-
-        {/* Desktop/laptop header: same as mobile, always visible on large screens */}
-        <div className="hidden lg:block">
-          <h1 className="text-xl font-semibold text-white">
-            Labadain LIX-R361
-          </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            Asistente AI ba Tetun
-          </p>
-        </div>
+        <h1 className="text-xl font-semibold text-white">
+          Labadain LIX-R361
+        </h1>
+        <p className="text-xs text-gray-500 mt-1">
+         Hafasil ita-nia moris ho AI
+        </p>
       </div>
       {/* Mobile menu button to open sidebar */}
       <button

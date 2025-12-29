@@ -6,6 +6,9 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { Message, User } from "./types";
 
+const INPUT_PLACEHOLDER = "Husu Labadain iha-ne'e...";
+const INPUT_HELPER_TEXT = "Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.";
+
 interface ChatMessagesProps {
   messages: Message[];
   user: User | null;
@@ -135,6 +138,15 @@ interface ChatInputWithSuggestionsProps {
   helperMarginClass: string;
 }
 
+function WelcomeText() {
+  return (
+    <>
+      <h2 className="text-3xl font-semibold mb-3 text-white">Ita sei konversa ho Labadain</h2>
+      <p className="text-gray-400 text-lg">Ita-nia asistente AI ba Tetun</p>
+    </>
+  );
+}
+
 function ChatInputWithSuggestions({
   mode,
   input,
@@ -210,8 +222,7 @@ export default function ChatMessages({
                     />
                   </div>
                 </div>
-                <h2 className="text-3xl font-semibold mb-3 text-white">Oinsá ha'u bele ajuda ita?</h2>
-                <p className="text-gray-400 text-lg">Bele husu ba ha'u saida de'it iha Tetun</p>
+                <WelcomeText />
               </div>
 
               {/* Desktop & laptops: avatar + same welcome text above centered input */}
@@ -227,8 +238,7 @@ export default function ChatMessages({
                         />
                       </div>
                     </div>
-                    <h2 className="text-3xl font-semibold mb-3 text-white">Oinsá ha'u bele ajuda ita?</h2>
-                    <p className="text-gray-400 text-lg">Bele husu ba ha'u saida de'it iha Tetun</p>
+                    <WelcomeText />
                   </div>
                   <ChatInputWithSuggestions
                     mode="welcome"
@@ -236,8 +246,8 @@ export default function ChatMessages({
                     loading={loading}
                     onChangeInput={onChangeInput}
                     onSubmit={onSubmit}
-                    placeholder="Hakerek ita-nia pergunta iha-ne'e..."
-                    helperText="Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira."
+                    placeholder={INPUT_PLACEHOLDER}
+                    helperText={INPUT_HELPER_TEXT}
                     formClassName="mt-4 space-y-3"
                     helperMarginClass="mt-3"
                   />
@@ -294,37 +304,24 @@ export default function ChatMessages({
       </div>
 
       {/* Input Area */}
-      {/* Mobile & small devices: fixed at bottom */}
-      <div className="bg-[#0D0D0D] p-4 lg:hidden fixed inset-x-0 bottom-0">
+      {/* Single bottom input: fixed on mobile, conditional on desktop */}
+      <div
+        className={`bg-[#0D0D0D] p-4 fixed lg:static inset-x-0 bottom-0 ${
+          messages.length > 0 ? "lg:block" : "lg:hidden"
+        }`}
+      >
         <ChatInputWithSuggestions
           mode="mobile"
           input={input}
           loading={loading}
           onChangeInput={onChangeInput}
           onSubmit={onSubmit}
-          placeholder="Hakerek pergunta iha-ne'e..."
-          helperText="Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira."
+          placeholder={INPUT_PLACEHOLDER}
+          helperText={INPUT_HELPER_TEXT}
           formClassName="max-w-3xl mx-auto space-y-3"
           helperMarginClass="mt-1"
         />
       </div>
-
-      {/* Desktop & laptops: bottom input only when there are messages */}
-      {messages.length > 0 && (
-        <div className="bg-[#0D0D0D] p-4 hidden lg:block">
-          <ChatInputWithSuggestions
-            mode="desktop"
-            input={input}
-            loading={loading}
-            onChangeInput={onChangeInput}
-            onSubmit={onSubmit}
-            placeholder="Hakerek pergunta iha-ne'e..."
-            helperText="Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira."
-            formClassName="max-w-3xl mx-auto space-y-3"
-            helperMarginClass="mt-1"
-          />
-        </div>
-      )}
     </>
   );
 }
