@@ -1,3 +1,5 @@
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 import React, { FormEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -44,6 +46,8 @@ const renderContent = (text: string) => {
                   {...props}
                 >
                   {children}
+                  <SpeedInsights />
+                  <Analytics />
                 </code>
               );
             }
