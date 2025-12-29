@@ -1,0 +1,50 @@
+import React from "react";
+
+interface ChatHeaderProps {
+  onOpenMobileSidebar: () => void;
+}
+
+export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
+  return (
+    <div className="bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+      <div className="flex-1">
+        {/* Mobile header: always visible on small screens */}
+        <div className="lg:hidden">
+          <h1 className="text-xl font-semibold text-white">
+            Labadain LIX-R361
+          </h1>
+          <p className="text-xs text-gray-500 mt-1">
+            Asistente AI ba Tetun
+          </p>
+        </div>
+
+        {/* Desktop/laptop header: same as mobile, always visible on large screens */}
+        <div className="hidden lg:block">
+          <h1 className="text-xl font-semibold text-white">
+            Labadain LIX-R361
+          </h1>
+          <p className="text-xs text-gray-500 mt-1">
+            Asistente AI ba Tetun
+          </p>
+        </div>
+      </div>
+      {/* Mobile menu button to open sidebar */}
+      <button
+        type="button"
+        className="lg:hidden p-2 rounded-lg border border-[#2A2A2A] text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors ml-3"
+        onClick={onOpenMobileSidebar}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-5 h-5"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+      </button>
+    </div>
+  );
+}
