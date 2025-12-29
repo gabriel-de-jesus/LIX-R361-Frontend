@@ -325,21 +325,6 @@ export default function ChatPage() {
     }
   }
 
-  async function handleSuggestionClick(text: string) {
-    const value = text.trim();
-    if (!value || loading) return;
-
-    if (!user) {
-      setPendingSuggestion(value);
-      setInput(value);
-      setShowAuth(true);
-      return;
-    }
-
-    await sendMessage(value);
-    setActiveSuggestionInput(null);
-  }
-
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!input.trim()) return;
