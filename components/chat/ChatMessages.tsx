@@ -9,12 +9,8 @@ interface ChatMessagesProps {
   user: User | null;
   input: string;
   loading: boolean;
-  suggestions: string[];
-  activeSuggestionInput: string | null;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   onChangeInput: (value: string) => void;
-  onSetActiveSuggestionInput: (value: string | null) => void;
-  onSuggestionClick: (text: string) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 }
 
@@ -127,11 +123,7 @@ interface ChatInputWithSuggestionsProps {
   mode: "welcome" | "mobile" | "desktop";
   input: string;
   loading: boolean;
-  suggestions: string[];
-  activeSuggestionInput: string | null;
   onChangeInput: (value: string) => void;
-  onSetActiveSuggestionInput: (value: string | null) => void;
-  onSuggestionClick: (text: string) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   placeholder: string;
   helperText: string;
@@ -143,29 +135,19 @@ function ChatInputWithSuggestions({
   mode,
   input,
   loading,
-  suggestions,
-  activeSuggestionInput,
   onChangeInput,
-  onSetActiveSuggestionInput,
-  onSuggestionClick,
   onSubmit,
   placeholder,
   helperText,
   formClassName,
   helperMarginClass,
 }: ChatInputWithSuggestionsProps) {
-  const suggestionKey = mode;
-
   return (
     <form onSubmit={onSubmit} className={formClassName}>
       <div className="relative">
         <input
           type="text"
           value={input}
-          onFocus={() => onSetActiveSuggestionInput(suggestionKey)}
-          onBlur={() => {
-            setTimeout(() => onSetActiveSuggestionInput(null), 0);
-          }}
           onChange={(e) => onChangeInput(e.target.value)}
           placeholder={placeholder}
           className="w-full px-5 py-4 pr-14 bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#20B8CD] focus:border-transparent text-white placeholder-gray-500 transition-all text-base"
@@ -189,21 +171,6 @@ function ChatInputWithSuggestions({
             </svg>
           )}
         </button>
-        {activeSuggestionInput === suggestionKey && suggestions.length > 0 && (
-          <div className="absolute left-0 right-14 top-full mt-2 z-20 rounded-xl border border-[#2A2A2A] bg-[#141414] shadow-lg max-h-48 overflow-y-auto">
-            {suggestions.slice(0, 5).map((s, idx) => (
-              <button
-                key={idx}
-                type="button"
-                disabled={loading}
-                onClick={() => onSuggestionClick(s)}
-                className="w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-[#1F1F1F] disabled:opacity-60 border-b border-[#2A2A2A]/40 last:border-b-0"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
       <p className={`text-center text-xs text-gray-500 ${helperMarginClass}`}>
         {helperText}
@@ -217,12 +184,8 @@ export default function ChatMessages({
   user,
   input,
   loading,
-  suggestions,
-  activeSuggestionInput,
   messagesEndRef,
   onChangeInput,
-  onSetActiveSuggestionInput,
-  onSuggestionClick,
   onSubmit,
 }: ChatMessagesProps) {
   return (
@@ -267,11 +230,7 @@ export default function ChatMessages({
                     mode="welcome"
                     input={input}
                     loading={loading}
-                    suggestions={suggestions}
-                    activeSuggestionInput={activeSuggestionInput}
                     onChangeInput={onChangeInput}
-                    onSetActiveSuggestionInput={onSetActiveSuggestionInput}
-                    onSuggestionClick={onSuggestionClick}
                     onSubmit={onSubmit}
                     placeholder="Hakerek ita-nia pergunta iha-ne'e..."
                     helperText="Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira."
@@ -337,11 +296,7 @@ export default function ChatMessages({
           mode="mobile"
           input={input}
           loading={loading}
-          suggestions={suggestions}
-          activeSuggestionInput={activeSuggestionInput}
           onChangeInput={onChangeInput}
-          onSetActiveSuggestionInput={onSetActiveSuggestionInput}
-          onSuggestionClick={onSuggestionClick}
           onSubmit={onSubmit}
           placeholder="Hakerek pergunta iha-ne'e..."
           helperText="Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira."
@@ -357,11 +312,7 @@ export default function ChatMessages({
             mode="desktop"
             input={input}
             loading={loading}
-            suggestions={suggestions}
-            activeSuggestionInput={activeSuggestionInput}
             onChangeInput={onChangeInput}
-            onSetActiveSuggestionInput={onSetActiveSuggestionInput}
-            onSuggestionClick={onSuggestionClick}
             onSubmit={onSubmit}
             placeholder="Hakerek pergunta iha-ne'e..."
             helperText="Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira."

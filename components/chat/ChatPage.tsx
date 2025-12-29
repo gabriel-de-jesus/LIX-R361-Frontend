@@ -19,7 +19,7 @@ export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState<Chat[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | number | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [activeSuggestionInput, setActiveSuggestionInput] = useState<string | null>(null);
+  const [pendingSuggestion, setPendingSuggestion] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -96,6 +96,12 @@ export default function ChatPage() {
       setUser(authUser);
       setShowAuth(false);
       setAuthError("");
+
+      if (pendingSuggestion) {
+        const textToSend = pendingSuggestion;
+        setPendingSuggestion(null);
+        await sendMessage(textToSend);
+      }
     } catch (err) {
       setAuthError((err as Error).message);
     }
@@ -137,6 +143,12 @@ export default function ChatPage() {
         localStorage.setItem("labadain_user", JSON.stringify(authUser));
         setUser(authUser);
         setShowAuth(false);
+
+        if (pendingSuggestion) {
+          const textToSend = pendingSuggestion;
+          setPendingSuggestion(null);
+          await sendMessage(textToSend);
+        }
       }
     } catch (err) {
       setAuthError((err as Error).message);
@@ -202,7 +214,6 @@ export default function ChatPage() {
   const startNewChat = () => {
     setMessages([]);
     setCurrentChatId(null);
-    setActiveSuggestionInput(null);
   };
 
   const deleteChat = async (id: string | number) => {
@@ -217,25 +228,6 @@ export default function ChatPage() {
       console.error(err);
     }
   };
-
-  const getSuggestions = (text: string): string[] => {
-    const trimmed = text.trim();
-
-    if (!trimmed) {
-      return [
-        "Favór ida fó ezemplu karta aplikasaun ba vaga finansas!",
-        "Ajuda hakerek email ida ba konvite reuniaun negósiu nian.",
-        "Tradús testu ne'e ba Portugés: Ha'u hadomi Timor-Leste.",
-        "Oinsá situasaun edukasaun daudaun ne'e iha Timor-Leste?",
-        "Favór kuriji ortografia Tetun: Nia ne kole tanba hlo serbicu barak.",
-      ];
-    }
-    // After the user starts typing (non-empty input),
-    // do not show any suggestions.
-    return [];
-  };
-
-  const suggestions = getSuggestions(input);
 
   async function sendMessage(text: string) {
     const userMsg: Message = { role: "user", content: text };
@@ -268,13 +260,31 @@ export default function ChatPage() {
 
         buffer += decoder.decode(value, { stream: true });
 
-        // Process complete SSE events separated by blank lines ("\n\n")
-        let eventEndIndex;
-        while ((eventEndIndex = buffer.indexOf("\n\n")) !== -1) {
-          const rawEvent = buffer.slice(0, eventEndIndex);
-          buffer = buffer.slice(eventEndIndex + 2);
+        // Process complete SSE events. Support both "\n\n" and "\r\n\r\n" delimiters
+        // so streaming works reliably behind different proxies/servers.
+        // Find the earliest event delimiter in the buffer.
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const idxLF = buffer.indexOf("\n\n");
+          const idxCRLF = buffer.indexOf("\r\n\r\n");
 
-          const lines = rawEvent.split("\n");
+          let eventEndIndex = -1;
+          let delimiterLength = 0;
+
+          if (idxLF !== -1 && (idxCRLF === -1 || idxLF < idxCRLF)) {
+            eventEndIndex = idxLF;
+            delimiterLength = 2;
+          } else if (idxCRLF !== -1) {
+            eventEndIndex = idxCRLF;
+            delimiterLength = 4;
+          }
+
+          if (eventEndIndex === -1) break;
+
+          const rawEvent = buffer.slice(0, eventEndIndex);
+          buffer = buffer.slice(eventEndIndex + delimiterLength);
+
+          const lines = rawEvent.split(/\r?\n/);
           let eventType: string | null = null;
           const dataLines: string[] = [];
 
@@ -320,6 +330,7 @@ export default function ChatPage() {
     if (!value || loading) return;
 
     if (!user) {
+      setPendingSuggestion(value);
       setInput(value);
       setShowAuth(true);
       return;
@@ -337,7 +348,6 @@ export default function ChatPage() {
       return;
     }
 
-    setActiveSuggestionInput(null);
     await sendMessage(input);
   }
 
@@ -364,12 +374,8 @@ export default function ChatPage() {
           user={user}
           input={input}
           loading={loading}
-          suggestions={suggestions}
-          activeSuggestionInput={activeSuggestionInput}
           messagesEndRef={messagesEndRef}
           onChangeInput={setInput}
-          onSetActiveSuggestionInput={setActiveSuggestionInput}
-          onSuggestionClick={handleSuggestionClick}
           onSubmit={handleSubmit}
         />
       </div>
