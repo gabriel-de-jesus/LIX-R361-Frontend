@@ -263,7 +263,7 @@ export default function ChatSidebar({
       {pendingDeleteId !== null && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
           <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
-            <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-361</h2>
+            <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
             <p className="text-sm text-gray-300 mb-4">
               Ita-boot hakarak hamoos tiha konversa ida-ne'e?
             </p>
