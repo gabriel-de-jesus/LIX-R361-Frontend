@@ -286,7 +286,7 @@ export default function ChatMessages({
                       </div>
                       {msg.streaming && !msg.content.trim() && (
                         <>
-                          <span className="text-gray-400 text-sm mr-2">Sei hanoin...</span>
+                          {/* <span className="text-gray-400 text-sm mr-2">Sei hanoin...</span> */}
                           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         </>
                       )}
