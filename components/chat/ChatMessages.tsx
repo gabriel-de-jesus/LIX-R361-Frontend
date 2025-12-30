@@ -1,6 +1,6 @@
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
-import React, { FormEvent } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -175,7 +175,27 @@ function ChatInputWithSuggestions({
           className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed text-white rounded-xl transition-all"
         >
           {loading ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            <div className="flex items-center gap-1.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="w-5 h-5 animate-spin"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="rgba(255,255,255,0.3)"
+                  strokeWidth="4"
+                />
+                <path
+                  fill="#FFFFFF"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4A10 10 0 002 12h2z"
+                />
+              </svg>
+              <span className="text-sm font-medium">Hanoin hela…</span>
+            </div>
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -204,6 +224,34 @@ export default function ChatMessages({
   onChangeInput,
   onSubmit,
 }: ChatMessagesProps) {
+  const [statusPhase, setStatusPhase] = useState<"prosesa" | "analiza" | "finaliza">("prosesa");
+
+  const hasPendingStream = messages.some(
+    (msg) => msg.role === "assistant" && msg.streaming && !msg.content.trim()
+  );
+
+  useEffect(() => {
+    let timerAnaliza: ReturnType<typeof setTimeout> | undefined;
+    let timerFinaliza: ReturnType<typeof setTimeout> | undefined;
+
+    if (hasPendingStream) {
+      setStatusPhase("prosesa");
+      timerAnaliza = setTimeout(() => {
+        setStatusPhase("analiza");
+      }, 2000);
+      timerFinaliza = setTimeout(() => {
+        setStatusPhase("finaliza");
+      }, 5000);
+    } else {
+      setStatusPhase("prosesa");
+    }
+
+    return () => {
+      if (timerAnaliza) clearTimeout(timerAnaliza);
+      if (timerFinaliza) clearTimeout(timerFinaliza);
+    };
+  }, [hasPendingStream]);
+
   return (
     <>
       {/* Messages */}
@@ -285,10 +333,33 @@ export default function ChatMessages({
                         />
                       </div>
                       {msg.streaming && !msg.content.trim() && (
-                        <>
-                          {/* <span className="text-gray-400 text-sm mr-2">Sei hanoin...</span> */}
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        </>
+                        <div className="flex items-center gap-1.5">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            className="w-5 h-5 animate-spin"
+                          >
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="rgba(255,255,255,0.3)"
+                              strokeWidth="4"
+                            />
+                            <path
+                              fill="#FFFFFF"
+                              d="M4 12a8 8 0 018-8v4l3-3-3-3v4A10 10 0 002 12h2z"
+                            />
+                          </svg>
+                          <span className="text-gray-400 text-sm">
+                            {statusPhase === "prosesa"
+                              ? "Prosesa..."
+                              : statusPhase === "analiza"
+                              ? "Analiza…"
+                              : "Finaliza..."}
+                          </span>
+                        </div>
                       )}
                     </div>
                     <div className="flex-1 pt-1">
