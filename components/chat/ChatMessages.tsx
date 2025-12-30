@@ -3,7 +3,10 @@ import { Analytics } from "@vercel/analytics/next"
 import React, { FormEvent, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import rehypeHighlight from "rehype-highlight";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import { Message, User } from "./types";
 
 const INPUT_PLACEHOLDER = "Husu Labadain iha-ne'e...";
@@ -25,8 +28,8 @@ const renderContent = (text: string) => {
   return (
     <div className="prose prose-invert max-w-none text-gray-200">
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeHighlight, rehypeKatex]}
         components={{
           a: ({ node, ...props }) => (
             <a
