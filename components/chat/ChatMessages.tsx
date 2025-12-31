@@ -265,7 +265,7 @@ export default function ChatMessages({
               {/* Mobile & small devices: centered welcome state */}
               <div className="lg:hidden flex flex-col items-center justify-center text-center h-full">
                 <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] flex items-center justify-center">
                     <img
                       src="/ai-avatar.png"
                       alt="AI assistant avatar"
@@ -281,7 +281,7 @@ export default function ChatMessages({
                 <div className="w-full">
                   <div className="mb-6 text-center flex flex-col items-center">
                     <div className="mb-3">
-                      <div className="w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] flex items-center justify-center">
+                      <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] flex items-center justify-center">
                         <img
                           src="/ai-avatar.png"
                           alt="AI assistant avatar"
