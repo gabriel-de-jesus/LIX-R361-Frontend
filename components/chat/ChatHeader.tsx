@@ -12,7 +12,7 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
           Labadain LIX-R361
         </h1>
         <p className="text-xs text-gray-500 mt-1">
-         Hafasil ita-nia moris ho AI
+         Hafasil ita-nia moris ho Labadain
         </p>
       </div>
       {/* Mobile menu button to open sidebar */}
