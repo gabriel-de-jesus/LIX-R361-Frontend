@@ -229,7 +229,7 @@ export default function ChatPage() {
     }
   };
 
-  async function sendMessage(text: string) {
+  async function sendMessage(text: string, file?: File | null) {
     const userMsg: Message = { role: "user", content: text };
     const newMsgs = [...messages, userMsg];
     setMessages(newMsgs);
@@ -240,83 +240,161 @@ export default function ChatPage() {
     setMessages(prev => [...prev, { role: "assistant", content: "", streaming: true }]);
 
     try {
-      const res = await fetch(`${API_BASE}/copilot/chat/stream`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMsgs }),
-      });
+      let res: Response;
+      if (file) {
+        const formData = new FormData();
+        formData.append("input_text", text);
+        formData.append("file", file);
+        formData.append("messages", JSON.stringify(messages));
+        res = await fetch(`${API_BASE}/copilot/chat/upload`, {
+          method: "POST",
+          body: formData,
+        });
 
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("No reader available");
+        // Streaming for file uploads
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error("No reader available");
 
-      const decoder = new TextDecoder();
-      let content = "";
-      let buffer = "";
-      let streamEnded = false;
+        const decoder = new TextDecoder();
+        let content = "";
+        let buffer = "";
+        let streamEnded = false;
 
-      while (!streamEnded) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        while (!streamEnded) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        buffer += decoder.decode(value, { stream: true });
+          buffer += decoder.decode(value, { stream: true });
 
-        // Process complete SSE events. Support both "\n\n" and "\r\n\r\n" delimiters
-        // so streaming works reliably behind different proxies/servers.
-        // Find the earliest event delimiter in the buffer.
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          const idxLF = buffer.indexOf("\n\n");
-          const idxCRLF = buffer.indexOf("\r\n\r\n");
+          while (true) {
+            const idxLF = buffer.indexOf("\n\n");
+            const idxCRLF = buffer.indexOf("\r\n\r\n");
 
-          let eventEndIndex = -1;
-          let delimiterLength = 0;
+            let eventEndIndex = -1;
+            let delimiterLength = 0;
 
-          if (idxLF !== -1 && (idxCRLF === -1 || idxLF < idxCRLF)) {
-            eventEndIndex = idxLF;
-            delimiterLength = 2;
-          } else if (idxCRLF !== -1) {
-            eventEndIndex = idxCRLF;
-            delimiterLength = 4;
-          }
+            if (idxLF !== -1 && (idxCRLF === -1 || idxLF < idxCRLF)) {
+              eventEndIndex = idxLF;
+              delimiterLength = 2;
+            } else if (idxCRLF !== -1) {
+              eventEndIndex = idxCRLF;
+              delimiterLength = 4;
+            }
 
-          if (eventEndIndex === -1) break;
+            if (eventEndIndex === -1) break;
 
-          const rawEvent = buffer.slice(0, eventEndIndex);
-          buffer = buffer.slice(eventEndIndex + delimiterLength);
+            const rawEvent = buffer.slice(0, eventEndIndex);
+            buffer = buffer.slice(eventEndIndex + delimiterLength);
 
-          const lines = rawEvent.split(/\r?\n/);
-          let eventType: string | null = null;
-          const dataLines: string[] = [];
+            const lines = rawEvent.split(/\r?\n/);
+            let eventType: string | null = null;
+            const dataLines: string[] = [];
 
-          for (const line of lines) {
-            if (line.startsWith("event: ")) {
-              eventType = line.slice(7).trim();
-            } else if (line.startsWith("data: ")) {
-              dataLines.push(line.slice(6));
+            for (const line of lines) {
+              if (line.startsWith("event: ")) {
+                eventType = line.slice(7).trim();
+              } else if (line.startsWith("data: ")) {
+                dataLines.push(line.slice(6));
+              }
+            }
+
+            const data = dataLines.join("\n");
+
+            if (eventType === "end") {
+              streamEnded = true;
+              break;
+            }
+
+            if (data && data !== "[DONE]") {
+              content += data;
+              setMessages(prev => {
+                const updated = [...prev];
+                updated[idx] = { role: "assistant" as const, content, streaming: true };
+                return updated;
+              });
             }
           }
+        }
 
-          const data = dataLines.join("\n");
+        const final = [...newMsgs, { role: "assistant" as const, content, streaming: false }];
+        setMessages(final);
+        await saveChat(final);
+      } else {
+        // Streaming for normal text
+        res = await fetch(`${API_BASE}/copilot/chat/stream`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: newMsgs }),
+        });
 
-          if (eventType === "end") {
-            streamEnded = true;
-            break;
-          }
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error("No reader available");
 
-          if (data && data !== "[DONE]") {
-            content += data;
-            setMessages(prev => {
-              const updated = [...prev];
-              updated[idx] = { role: "assistant" as const, content, streaming: true };
-              return updated;
-            });
+        const decoder = new TextDecoder();
+        let content = "";
+        let buffer = "";
+        let streamEnded = false;
+
+        while (!streamEnded) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          while (true) {
+            const idxLF = buffer.indexOf("\n\n");
+            const idxCRLF = buffer.indexOf("\r\n\r\n");
+
+            let eventEndIndex = -1;
+            let delimiterLength = 0;
+
+            if (idxLF !== -1 && (idxCRLF === -1 || idxLF < idxCRLF)) {
+              eventEndIndex = idxLF;
+              delimiterLength = 2;
+            } else if (idxCRLF !== -1) {
+              eventEndIndex = idxCRLF;
+              delimiterLength = 4;
+            }
+
+            if (eventEndIndex === -1) break;
+
+            const rawEvent = buffer.slice(0, eventEndIndex);
+            buffer = buffer.slice(eventEndIndex + delimiterLength);
+
+            const lines = rawEvent.split(/\r?\n/);
+            let eventType: string | null = null;
+            const dataLines: string[] = [];
+
+            for (const line of lines) {
+              if (line.startsWith("event: ")) {
+                eventType = line.slice(7).trim();
+              } else if (line.startsWith("data: ")) {
+                dataLines.push(line.slice(6));
+              }
+            }
+
+            const data = dataLines.join("\n");
+
+            if (eventType === "end") {
+              streamEnded = true;
+              break;
+            }
+
+            if (data && data !== "[DONE]") {
+              content += data;
+              setMessages(prev => {
+                const updated = [...prev];
+                updated[idx] = { role: "assistant" as const, content, streaming: true };
+                return updated;
+              });
+            }
           }
         }
-      }
 
-      const final = [...newMsgs, { role: "assistant" as const, content, streaming: false }];
-      setMessages(final);
-      await saveChat(final);
+        const final = [...newMsgs, { role: "assistant" as const, content, streaming: false }];
+        setMessages(final);
+        await saveChat(final);
+      }
     } catch (error) {
       console.error(error);
       setMessages(prev => prev.filter((_, i) => i !== idx));
@@ -325,15 +403,15 @@ export default function ChatPage() {
     }
   }
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  // Accept file argument for handleSubmit
+  async function handleSubmit(e: FormEvent<HTMLFormElement>, file?: File | null) {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() && !file) return;
     if (!user) {
       setShowAuth(true);
       return;
     }
-
-    await sendMessage(input);
+    await sendMessage(input, file);
   }
 
   return (
