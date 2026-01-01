@@ -450,7 +450,7 @@ export default function ChatMessages({
               </div>
             ))}
           </div>
-          <div ref={messagesEndRef} className="h-32 lg:h-0" />
+          <div ref={messagesEndRef} className="h-40 lg:h-0" />
         </div>
       </div>
 
