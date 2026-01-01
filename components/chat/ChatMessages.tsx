@@ -235,9 +235,10 @@ function ChatInputWithSuggestions({
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10" tabIndex={0} onBlur={handleDropdownBlur}>
             <button
               type="button"
-              className="flex items-center justify-center w-7 h-7 rounded-full bg-[#232323] text-[#20B8CD] hover:bg-[#1BA5BA] focus:outline-none focus:ring-2 focus:ring-[#20B8CD]"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-[#232323] text-[#20B8CD] hover:bg-[#1BA5BA] focus:outline-none focus:ring-2 focus:ring-[#20B8CD] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed"
               onClick={handleDropdown}
               aria-label="More options"
+              disabled={loading}
             >
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/></svg>
             </button>

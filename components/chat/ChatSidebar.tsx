@@ -30,7 +30,7 @@ interface SidebarContentProps {
   userSectionClassName: string;
 }
 
-function SidebarContent({
+export function SidebarContent({
   chatHistory,
   currentChatId,
   user,
@@ -200,23 +200,7 @@ export default function ChatSidebar({
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:flex lg:flex-col w-72 bg-[#0D0D0D] border-r border-[#2A2A2A]">
-        <SidebarContent
-          chatHistory={chatHistory}
-          currentChatId={currentChatId}
-          user={user}
-          onStartNewChat={onStartNewChat}
-          onLoadChat={onLoadChat}
-          onDeleteChat={handleRequestDeleteChat}
-          onLogout={onLogout}
-          onShowAuth={onShowAuth}
-          newChatLabel="Konversa Foun"
-          authButtonLabel="Sign in"
-          chatListClassName="flex-1 overflow-y-auto px-2"
-          userSectionClassName="p-3"
-        />
-      </div>
+      {/* Desktop Sidebar removed: now handled by ChatPage for collapsible behavior */}
 
       {/* Mobile Sidebar Overlay */}
       {isMobileSidebarOpen && (

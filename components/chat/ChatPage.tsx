@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect, FormEvent } from "react";
 import type { CredentialResponse } from '@react-oauth/google';
 import { Message, User, Chat } from "./types";
 import ChatHeader from "./ChatHeader";
-import ChatSidebar from "./ChatSidebar";
+import ChatSidebar, { SidebarContent } from "./ChatSidebar";
 import ChatMessages from "./ChatMessages";
 import AuthModal from "./AuthModal";
 
 export default function ChatPage() {
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | number | null>(null);
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -19,6 +20,7 @@ export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState<Chat[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | number | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const [pendingSuggestion, setPendingSuggestion] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -216,17 +218,27 @@ export default function ChatPage() {
     setCurrentChatId(null);
   };
 
-  const deleteChat = async (id: string | number) => {
-    if (!user) return;
+  const requestDeleteChat = (id: string | number) => {
+    setPendingDeleteId(id);
+  };
+
+  const confirmDeleteChat = async () => {
+    if (!user || pendingDeleteId === null) return;
     try {
-      const res = await fetch(`${API_BASE}/chats/${id}?user_id=${user.id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE}/chats/${pendingDeleteId}?user_id=${user.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete chat");
-      const updated = chatHistory.filter(c => c.id !== id);
+      const updated = chatHistory.filter(c => c.id !== pendingDeleteId);
       setChatHistory(updated);
-      if (currentChatId === id) startNewChat();
+      if (currentChatId === pendingDeleteId) startNewChat();
     } catch (err) {
       console.error(err);
+    } finally {
+      setPendingDeleteId(null);
     }
+  };
+
+  const cancelDeleteChat = () => {
+    setPendingDeleteId(null);
   };
 
   async function sendMessage(text: string, file?: File | null) {
@@ -416,6 +428,79 @@ export default function ChatPage() {
 
   return (
     <div className="relative flex h-screen bg-[#0D0D0D]">
+      {/* Desktop Sidebar Toggle Button */}
+      <button
+        type="button"
+        className="hidden lg:block absolute left-2 top-4 z-30 p-2 rounded-lg border border-[#2A2A2A] text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
+        onClick={() => setIsDesktopSidebarOpen(true)}
+        style={{ display: isDesktopSidebarOpen ? 'none' : undefined }}
+        aria-label="Open sidebar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+      </button>
+
+      {/* Desktop Sidebar (collapsible) */}
+      {isDesktopSidebarOpen && (
+        <div className="hidden lg:flex lg:flex-col w-72 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 relative h-full">
+          <div className="pt-6 pb-2 px-3 flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-200">Istóriku Konversa Sira</span>
+            <button
+              type="button"
+              className="ml-4 p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1A1A1A] transition-colors"
+              onClick={() => setIsDesktopSidebarOpen(false)}
+              aria-label="Close sidebar"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <SidebarContent
+            chatHistory={chatHistory}
+            currentChatId={currentChatId}
+            user={user}
+            onStartNewChat={startNewChat}
+            onLoadChat={loadChat}
+            onDeleteChat={requestDeleteChat}
+            onLogout={handleLogout}
+            onShowAuth={() => setShowAuth(true)}
+            newChatLabel="Konversa Foun"
+            authButtonLabel={user ? "Logout" : "Login"}
+            chatListClassName="flex-1 overflow-y-auto px-2"
+            userSectionClassName="p-3"
+          />
+          {pendingDeleteId !== null && (
+            <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
+              <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
+                <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
+                <p className="text-sm text-gray-300 mb-4">
+                  Ita-boot hakarak hamoos tiha konversa ida-ne'e?
+                </p>
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={cancelDeleteChat}
+                    className="px-4 py-2 rounded-lg text-sm font-medium text-gray-200 bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors"
+                  >
+                    Lae
+                  </button>
+                  <button
+                    type="button"
+                    onClick={confirmDeleteChat}
+                    className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
+                  >
+                    Loos
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Mobile Sidebar (unchanged) */}
       <ChatSidebar
         chatHistory={chatHistory}
         currentChatId={currentChatId}
@@ -423,13 +508,13 @@ export default function ChatPage() {
         isMobileSidebarOpen={isMobileSidebarOpen}
         onStartNewChat={startNewChat}
         onLoadChat={loadChat}
-        onDeleteChat={deleteChat}
+        onDeleteChat={requestDeleteChat}
         onLogout={handleLogout}
         onShowAuth={() => setShowAuth(true)}
         onCloseMobileSidebar={() => setIsMobileSidebarOpen(false)}
       />
 
-      <div className="flex flex-col flex-1">
+      <div className={`flex flex-col flex-1 ${!isDesktopSidebarOpen ? 'lg:ml-12' : ''}`}> 
         <ChatHeader onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)} />
 
         <ChatMessages
