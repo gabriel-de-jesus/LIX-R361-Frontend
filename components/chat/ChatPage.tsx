@@ -515,16 +515,21 @@ export default function ChatPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <button
-              type="button"
-              className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
-              onClick={startNewChat}
-              aria-label="New chat"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-            </button>
+            <div className="relative group">
+              <button
+                type="button"
+                className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+                onClick={startNewChat}
+                aria-label="New chat"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </button>
+              <span className="pointer-events-none absolute top-full mt-2 left-0 px-1 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Konversa Foun
+              </span>
+            </div>
           </div>
           <div className="flex flex-col items-center w-full pb-4">
             <div className="relative group">
