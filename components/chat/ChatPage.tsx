@@ -17,6 +17,8 @@ export default function ChatPage() {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [authError, setAuthError] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
+  const [lastAuthEmail, setLastAuthEmail] = useState<string | null>(null);
+  const [canResendConfirmation, setCanResendConfirmation] = useState(false);
   const [chatHistory, setChatHistory] = useState<Chat[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | number | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -121,6 +123,10 @@ export default function ChatPage() {
     };
     const endpoint = authMode === "signup" ? "signup" : "login";
 
+    // Remember the last email used for auth so we can
+    // offer a "resend confirmation" action when needed.
+    setLastAuthEmail(userData.email);
+
     try {
       const res = await fetch(`${API_BASE}/auth/${endpoint}`, {
         method: "POST",
@@ -130,6 +136,19 @@ export default function ChatPage() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
+        // If the account exists but is not yet confirmed, show a
+        // clear message and allow resending the confirmation email.
+        if (
+          res.status === 403 &&
+          body.detail &&
+          typeof body.detail === "string" &&
+          body.detail.includes("konfirma ita-nia email")
+        ) {
+          setAuthError(body.detail);
+          setCanResendConfirmation(true);
+          return;
+        }
+
         throw new Error(body.detail || "Authentication failed");
       }
 
@@ -141,10 +160,12 @@ export default function ChatPage() {
         setAuthError(
           "Ita-nia konta kria tiha ona ho susesu. Favór hare ita-nia email atu konfirma hodi bele halo login."
         );
+         setCanResendConfirmation(true);
       } else {
         localStorage.setItem("labadain_user", JSON.stringify(authUser));
         setUser(authUser);
         setShowAuth(false);
+        setCanResendConfirmation(false);
 
         if (pendingSuggestion) {
           const textToSend = pendingSuggestion;
@@ -152,6 +173,39 @@ export default function ChatPage() {
           await sendMessage(textToSend);
         }
       }
+    } catch (err) {
+      setAuthError((err as Error).message);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!lastAuthEmail) {
+      setAuthError("Favór tau email iha formuláriu login ka signup lai.");
+      return;
+    }
+
+    setAuthLoading(true);
+    setAuthError("");
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/resend-confirmation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: lastAuthEmail }),
+      });
+
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(body.detail || "La konsege haruka fali email konfirmasaun nian.");
+      }
+
+      setAuthError(
+        (body.message as string) ||
+        "Link konfirmasaun foun haruka tiha ona ba ita-nia email. Favór hare ita-nia inbox (nomós iha spam/junk folder)."
+      );
+      setCanResendConfirmation(true);
     } catch (err) {
       setAuthError((err as Error).message);
     } finally {
@@ -599,7 +653,13 @@ export default function ChatPage() {
         authError={authError}
         authLoading={authLoading}
         onSubmit={handleAuth}
-        onToggleMode={() => setAuthMode(authMode === "login" ? "signup" : "login")}
+        onToggleMode={() => {
+          setAuthMode(authMode === "login" ? "signup" : "login");
+          setCanResendConfirmation(false);
+          setAuthError("");
+        }}
+        canResendConfirmation={canResendConfirmation}
+        onResendConfirmation={handleResendConfirmation}
         onGoogleSuccess={handleGoogleSuccess}
         onGoogleError={() => setAuthError("Google authentication failed.")}
       />

@@ -10,6 +10,8 @@ interface AuthModalProps {
   onToggleMode: () => void;
   onGoogleSuccess: (response: CredentialResponse) => void;
   onGoogleError: () => void;
+  canResendConfirmation: boolean;
+  onResendConfirmation: () => void;
 }
 
 export default function AuthModal({
@@ -21,6 +23,8 @@ export default function AuthModal({
   onToggleMode,
   onGoogleSuccess,
   onGoogleError,
+  canResendConfirmation,
+  onResendConfirmation,
 }: AuthModalProps) {
   if (!show) return null;
 
@@ -96,6 +100,18 @@ export default function AuthModal({
           {authError && (
             <div className="mt-4 p-3 bg-red-900/20 border border-red-800/50 rounded-xl">
               <span className="text-red-400 text-sm">{authError}</span>
+            </div>
+          )}
+          {canResendConfirmation && (
+            <div className="mt-3 flex justify-center">
+              <button
+                type="button"
+                onClick={onResendConfirmation}
+                className="text-xs text-[#20B8CD] hover:text-[#1BA5BA] underline underline-offset-4"
+                disabled={authLoading}
+             >
+                Seidauk simu email konfirmasaun? Haruka fali link foun ida.
+              </button>
             </div>
           )}
           <p className="text-center text-sm mt-6 text-gray-400">
