@@ -235,7 +235,7 @@ function ChatInputWithSuggestions({
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10" tabIndex={0} onBlur={handleDropdownBlur}>
             <button
               type="button"
-              className="flex items-center justify-center w-7 h-7 rounded-full bg-[#232323] text-[#20B8CD] hover:bg-[#1BA5BA] focus:outline-none focus:ring-2 focus:ring-[#20B8CD] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-[#232323] text-[#20B8CD] hover:text-white hover:bg-[#1BA5BA] focus:outline-none focus:ring-2 focus:ring-[#20B8CD] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed"
               onClick={handleDropdown}
               aria-label="More options"
               disabled={loading}

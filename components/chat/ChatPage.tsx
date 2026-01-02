@@ -434,16 +434,31 @@ export default function ChatPage() {
         <div className="hidden lg:flex lg:flex-col w-72 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 relative h-full">
           <div className="pt-6 pb-2 px-3 flex items-center justify-between">
             <span className="text-sm font-medium text-gray-200">Istóriku Konversa Sira</span>
-            <button
-              type="button"
-              className="ml-4 p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1A1A1A] transition-colors"
-              onClick={() => setIsDesktopSidebarOpen(false)}
-              aria-label="Close sidebar"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="relative ml-4 group">
+              <button
+                type="button"
+                className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1A1A1A] transition-colors"
+                onClick={() => setIsDesktopSidebarOpen(false)}
+                aria-label="Minimiza"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5"
+                  aria-hidden="true"
+                >
+                  <path d="M15.75 19.5L9.25 12l6.5-7.5" />
+                </svg>
+              </button>
+              <span className="pointer-events-none absolute -bottom-8 right-0 px-2 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
+                Minimiza
+              </span>
+            </div>
           </div>
           <SidebarContent
             chatHistory={chatHistory}
@@ -512,30 +527,35 @@ export default function ChatPage() {
             </button>
           </div>
           <div className="flex flex-col items-center w-full pb-4">
-            <button
-              type="button"
-              className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
-              onClick={user ? handleLogout : () => setShowAuth(true)}
-              aria-label={user ? "Logout" : "Login"}
-            >
-              {user ? (
-                user.avatar_url ? (
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA]">
-                    <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
-                  </span>
+            <div className="relative group">
+              <button
+                type="button"
+                className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+                onClick={user ? handleLogout : () => setShowAuth(true)}
+                aria-label={user ? "Logout" : "Login"}
+              >
+                {user ? (
+                  user.avatar_url ? (
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA]">
+                      <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] text-white font-semibold text-base">
+                      {user.name ? user.name[0].toUpperCase() : "U"}
+                    </span>
+                  )
                 ) : (
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] text-white font-semibold text-base">
-                    {user.name ? user.name[0].toUpperCase() : "U"}
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9A3.75 3.75 0 1112 5.25 3.75 3.75 0 0115.75 9zm-7.5 9a7.5 7.5 0 1115 0v.75a.75.75 0 01-.75.75h-13.5a.75.75 0 01-.75-.75V18z" />
+                    </svg>
                   </span>
-                )
-              ) : (
-                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA]">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9A3.75 3.75 0 1112 5.25 3.75 3.75 0 0115.75 9zm-7.5 9a7.5 7.5 0 1115 0v.75a.75.75 0 01-.75.75h-13.5a.75.75 0 01-.75-.75V18z" />
-                  </svg>
-                </span>
-              )}
-            </button>
+                )}
+              </button>
+              <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
+                {user ? "Logout" : "Login"}
+              </span>
+            </div>
           </div>
         </div>
       )}
