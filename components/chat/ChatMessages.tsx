@@ -17,7 +17,7 @@ function PopupBox({ open, message, onClose }: { open: boolean; message: string; 
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
           >
-            Di'ak
+            OK
           </button>
         </div>
       </div>
