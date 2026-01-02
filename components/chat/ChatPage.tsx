@@ -20,7 +20,7 @@ export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState<Chat[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | number | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(false);
   const [pendingSuggestion, setPendingSuggestion] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -428,21 +428,9 @@ export default function ChatPage() {
 
   return (
     <div className="relative flex h-screen bg-[#0D0D0D]">
-      {/* Desktop Sidebar Toggle Button */}
-      <button
-        type="button"
-        className="hidden lg:block absolute left-2 top-4 z-30 p-2 rounded-lg border border-[#2A2A2A] text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
-        onClick={() => setIsDesktopSidebarOpen(true)}
-        style={{ display: isDesktopSidebarOpen ? 'none' : undefined }}
-        aria-label="Open sidebar"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-      </button>
 
-      {/* Desktop Sidebar (collapsible) */}
-      {isDesktopSidebarOpen && (
+      {/* Desktop Sidebar: full or compact */}
+      {isDesktopSidebarOpen ? (
         <div className="hidden lg:flex lg:flex-col w-72 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 relative h-full">
           <div className="pt-6 pb-2 px-3 flex items-center justify-between">
             <span className="text-sm font-medium text-gray-200">Istóriku Konversa Sira</span>
@@ -497,6 +485,58 @@ export default function ChatPage() {
               </div>
             </div>
           )}
+        </div>
+      ) : (
+        // Compact sidebar with icons only
+        <div className="hidden lg:flex flex-col w-16 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 h-full items-center py-4">
+          <div className="flex flex-col items-center space-y-4 flex-1 w-full">
+            <button
+              type="button"
+              className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+              onClick={() => setIsDesktopSidebarOpen(true)}
+              aria-label="Open sidebar"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+              onClick={startNewChat}
+              aria-label="New chat"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex flex-col items-center w-full pb-4">
+            <button
+              type="button"
+              className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+              onClick={user ? handleLogout : () => setShowAuth(true)}
+              aria-label={user ? "Logout" : "Login"}
+            >
+              {user ? (
+                user.avatar_url ? (
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA]">
+                    <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] text-white font-semibold text-base">
+                    {user.name ? user.name[0].toUpperCase() : "U"}
+                  </span>
+                )
+              ) : (
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA]">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9A3.75 3.75 0 1112 5.25 3.75 3.75 0 0115.75 9zm-7.5 9a7.5 7.5 0 1115 0v.75a.75.75 0 01-.75.75h-13.5a.75.75 0 01-.75-.75V18z" />
+                  </svg>
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       )}
 
