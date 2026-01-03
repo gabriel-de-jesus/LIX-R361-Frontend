@@ -195,8 +195,8 @@ function ChatInputWithSuggestions({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 75 * 1024) {
-        setFileError('Ita-nia fixeiru la konsege karrega ho susesu tanba tamañu liu tiha ona 75KB.');
+      if (file.size > 50 * 1024) {
+        setFileError('Ita-nia fixeiru la konsege karrega ho susesu tanba tamañu liu tiha ona 50KB.');
         e.target.value = '';
         setSelectedFile(null);
       } else {
@@ -253,7 +253,7 @@ function ChatInputWithSuggestions({
                   <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" className="inline-block">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 13.5l-5.25 5.25a3 3 0 01-4.24-4.24l9-9a2.121 2.121 0 013 3l-9 9" />
                   </svg>
-                  Karrega fixeiru (Max. 75KB)
+                  Karrega fixeiru (Max. 50KB)
                 </button>
               </div>
             )}
