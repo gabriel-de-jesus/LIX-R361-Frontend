@@ -380,9 +380,9 @@ export default function ChatPage() {
                   updated[idx] = { role: "assistant" as const, content, streaming: true };
                   return updated;
                 });
-                // Small delay to mimic natural typing
+                // Small delay to mimic natural typing (faster)
                 // eslint-disable-next-line no-await-in-loop
-                await new Promise(resolve => setTimeout(resolve, 60));
+                await new Promise(resolve => setTimeout(resolve, 15));
               }
             }
           }
@@ -460,8 +460,9 @@ export default function ChatPage() {
                   updated[idx] = { role: "assistant" as const, content, streaming: true };
                   return updated;
                 });
+                // Slightly faster typewriter for normal text
                 // eslint-disable-next-line no-await-in-loop
-                await new Promise(resolve => setTimeout(resolve, 20));
+                await new Promise(resolve => setTimeout(resolve, 15));
               }
             }
           }
