@@ -382,7 +382,7 @@ export default function ChatPage() {
                 });
                 // Small delay to mimic natural typing
                 // eslint-disable-next-line no-await-in-loop
-                await new Promise(resolve => setTimeout(resolve, 10));
+                await new Promise(resolve => setTimeout(resolve, 60));
               }
             }
           }
