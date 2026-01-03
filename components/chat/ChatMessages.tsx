@@ -319,10 +319,10 @@ export default function ChatMessages({
       setStatusPhase("prosesa");
       timerAnaliza = setTimeout(() => {
         setStatusPhase("analiza");
-      }, 4000);
+      }, 2000);
       timerFinaliza = setTimeout(() => {
         setStatusPhase("finaliza");
-      }, 9000);
+      }, 5000);
     } else {
       setStatusPhase("prosesa");
     }
