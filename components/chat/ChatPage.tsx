@@ -372,12 +372,18 @@ export default function ChatPage() {
             }
 
             if (data && data !== "[DONE]") {
-              content += data;
-              setMessages(prev => {
-                const updated = [...prev];
-                updated[idx] = { role: "assistant" as const, content, streaming: true };
-                return updated;
-              });
+              // Typewriter-style reveal: append characters one by one
+              for (const ch of data) {
+                content += ch;
+                setMessages(prev => {
+                  const updated = [...prev];
+                  updated[idx] = { role: "assistant" as const, content, streaming: true };
+                  return updated;
+                });
+                // Small delay to mimic natural typing
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise(resolve => setTimeout(resolve, 20));
+              }
             }
           }
         }
@@ -447,12 +453,16 @@ export default function ChatPage() {
             }
 
             if (data && data !== "[DONE]") {
-              content += data;
-              setMessages(prev => {
-                const updated = [...prev];
-                updated[idx] = { role: "assistant" as const, content, streaming: true };
-                return updated;
-              });
+              for (const ch of data) {
+                content += ch;
+                setMessages(prev => {
+                  const updated = [...prev];
+                  updated[idx] = { role: "assistant" as const, content, streaming: true };
+                  return updated;
+                });
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise(resolve => setTimeout(resolve, 20));
+              }
             }
           }
         }
