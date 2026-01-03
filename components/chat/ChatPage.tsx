@@ -497,7 +497,7 @@ export default function ChatPage() {
       {isDesktopSidebarOpen ? (
         <div className="hidden lg:flex lg:flex-col w-72 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 relative h-full">
           <div className="pt-6 pb-2 px-3 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-200">Istóriku Konversa Sira</span>
+            <span className="text-sm font-medium text-gray-200">Labadain Timor-Leste</span>
             <div className="relative ml-4 group">
               <button
                 type="button"
