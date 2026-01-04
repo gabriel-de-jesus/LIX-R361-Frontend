@@ -37,6 +37,7 @@ import { Message, User } from "./types";
 
 const INPUT_PLACEHOLDER = "Husu Labadain iha-ne'e...";
 const INPUT_HELPER_TEXT = "Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.";
+const MAX_WORDS = 120;
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -189,6 +190,7 @@ function ChatInputWithSuggestions({
 }: ChatInputWithSuggestionsProps) {
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [fileError, setFileError] = React.useState<string>("");
+  const [textError, setTextError] = React.useState<string>("");
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -211,6 +213,29 @@ function ChatInputWithSuggestions({
     if (!e.currentTarget.contains(e.relatedTarget)) setDropdownOpen(false);
   };
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const trimmed = value.trim();
+
+    if (!trimmed) {
+      onChangeInput("");
+      return;
+    }
+
+    const words = trimmed.split(/\s+/);
+    if (words.length <= MAX_WORDS) {
+      onChangeInput(value);
+      return;
+    }
+
+    const limited = words.slice(0, MAX_WORDS).join(" ");
+    onChangeInput(limited);
+
+    setTextError(
+      "Ita-nia testu barak liu. Labadain rekomenda atu ita-boot bele tau ba fixeiru ida depois karrega ba iha plataforma"
+    );
+  };
+
   // Wrap the onSubmit to clear file after submit and pass file to parent
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     onSubmit(e, selectedFile);
@@ -220,6 +245,7 @@ function ChatInputWithSuggestions({
   return (
     <>
       <PopupBox open={!!fileError} message={fileError} onClose={() => setFileError("")} />
+      <PopupBox open={!!textError} message={textError} onClose={() => setTextError("")} />
       <form onSubmit={handleSubmit} className={formClassName}>
         {/* Always render file input for Chrome compatibility */}
         <input
@@ -261,7 +287,7 @@ function ChatInputWithSuggestions({
           <input
             type="text"
             value={input}
-            onChange={(e) => onChangeInput(e.target.value)}
+            onChange={handleTextChange}
             placeholder={placeholder}
             className={`w-full px-12 py-4 pr-14 bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#20B8CD] focus:border-transparent text-white placeholder-gray-500 transition-all text-base ${selectedFile ? 'pr-28' : ''}`}
             disabled={loading}
