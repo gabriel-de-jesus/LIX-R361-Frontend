@@ -13,13 +13,13 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
           <h1 className="text-xl font-semibold text-white truncate">
             Labadain LIX-R361
           </h1>
-          <p className="text-xs text-gray-500 mt-1 truncate">
+          <p className="text-xs text-gray-400 truncate">
             Hafasil ita-nia moris
           </p>
         </div>
       </div>
 
-      <nav className="hidden md:flex items-center gap-4 text-xs lg:text-sm text-gray-300 mr-3">
+      <nav className="hidden md:flex items-center gap-4 text-sm text-gray-300">
         <a
           href="https://old.labadain.com"
           target="_blank"
@@ -44,12 +44,14 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
         >
           Timor News
         </a>
-        <Link href="/kontaktu" className="hover:text-white whitespace-nowrap">
+        <Link
+          href="/contact"
+          className="hover:text-white whitespace-nowrap"
+        >
           Kontaktu
         </Link>
       </nav>
 
-      {/* Mobile menu button to open sidebar */}
       <button
         type="button"
         className="md:hidden p-2 rounded-lg border border-[#2A2A2A] text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors ml-3 flex-shrink-0"
@@ -63,7 +65,11 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
           stroke="currentColor"
           className="w-5 h-5"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+          />
         </svg>
       </button>
     </div>
