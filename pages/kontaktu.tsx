@@ -7,7 +7,7 @@ export default function KontaktuPage() {
       <Head>
         <title>Labadain Kontaktu</title>
       </Head>
-      <header className="border-b border-[#2A2A2A] bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+      <header className="bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center justify-between sticky top-0 z-20">
         <Link href="/" className="group min-w-0">
           <div className="min-w-0">
             <h1 className="text-lg font-semibold group-hover:text-white truncate">Labadain LIX-R361</h1>

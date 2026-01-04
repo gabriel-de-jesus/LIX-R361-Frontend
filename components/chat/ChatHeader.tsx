@@ -7,7 +7,7 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
   return (
-    <div className="bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center justify-between sticky top-0 z-10 border-b border-[#2A2A2A]">
+    <div className="bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center justify-between sticky top-0 z-10">
       <div className="flex items-center flex-1 min-w-0">
         <div className="min-w-0">
           <h1 className="text-xl font-semibold text-white truncate">
