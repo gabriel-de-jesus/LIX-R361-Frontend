@@ -24,6 +24,7 @@ export default function ChatPage() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(false);
   const [pendingSuggestion, setPendingSuggestion] = useState<string | null>(null);
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -305,6 +306,9 @@ export default function ChatPage() {
     const idx = newMsgs.length;
     setMessages(prev => [...prev, { role: "assistant", content: "", streaming: true }]);
 
+    const controller = new AbortController();
+    setAbortController(controller);
+
     try {
       let res: Response;
       if (file) {
@@ -315,6 +319,7 @@ export default function ChatPage() {
         res = await fetch(`${API_BASE}/copilot/chat/upload`, {
           method: "POST",
           body: formData,
+          signal: controller.signal,
         });
 
         // Streaming for file uploads
@@ -397,6 +402,7 @@ export default function ChatPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ messages: newMsgs }),
+          signal: controller.signal,
         });
 
         const reader = res.body?.getReader();
@@ -473,9 +479,21 @@ export default function ChatPage() {
         await saveChat(final);
       }
     } catch (error) {
-      console.error(error);
-      setMessages(prev => prev.filter((_, i) => i !== idx));
+      if ((error as any)?.name === "AbortError") {
+        // Mark the streaming message as finished but keep whatever content arrived
+        setMessages(prev => {
+          const updated = [...prev];
+          if (updated[idx]) {
+            updated[idx] = { ...(updated[idx] as any), streaming: false };
+          }
+          return updated;
+        });
+      } else {
+        console.error(error);
+        setMessages(prev => prev.filter((_, i) => i !== idx));
+      }
     } finally {
+      setAbortController(null);
       setLoading(false);
     }
   }
@@ -490,6 +508,11 @@ export default function ChatPage() {
     }
     await sendMessage(input, file);
   }
+
+  const handleCancelGeneration = () => {
+    if (!loading || !abortController) return;
+    abortController.abort();
+  };
 
   return (
     <div className="relative flex h-screen bg-[#0D0D0D]">
@@ -655,6 +678,7 @@ export default function ChatPage() {
           messagesEndRef={messagesEndRef}
           onChangeInput={setInput}
           onSubmit={handleSubmit}
+          onCancel={handleCancelGeneration}
         />
       </div>
 

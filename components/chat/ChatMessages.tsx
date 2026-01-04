@@ -47,6 +47,7 @@ interface ChatMessagesProps {
   messagesEndRef: React.RefObject<HTMLDivElement>;
   onChangeInput: (value: string) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>, file?: File | null) => void;
+  onCancel: () => void;
 }
 
 const renderContent = (text: string) => {
@@ -166,6 +167,7 @@ interface ChatInputWithSuggestionsProps {
   helperText: string;
   formClassName: string;
   helperMarginClass: string;
+  onCancel: () => void;
 }
 
 function WelcomeText() {
@@ -187,6 +189,7 @@ function ChatInputWithSuggestions({
   helperText,
   formClassName,
   helperMarginClass,
+  onCancel,
 }: ChatInputWithSuggestionsProps) {
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [fileError, setFileError] = React.useState<string>("");
@@ -299,20 +302,43 @@ function ChatInputWithSuggestions({
               <button type="button" onClick={handleRemoveFile} className="ml-1 text-gray-400 hover:text-red-400 focus:outline-none">&times;</button>
             </span>
           )}
-          <button
-            type="submit"
-            disabled={loading || (!input.trim() && !selectedFile)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed text-white rounded-xl transition-all"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-5 h-5"
+          {loading ? (
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 group">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] text-white rounded-xl transition-all"
+                aria-label="Cancel generation"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-4 h-4"
+                >
+                  <rect x="7" y="7" width="10" height="10" rx="2" />
+                </svg>
+              </button>
+              <span className="pointer-events-none absolute -top-8 right-1/2 translate-x-1/2 px-2 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
+                Kansela
+              </span>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              disabled={!input.trim() && !selectedFile}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed text-white rounded-xl transition-all"
             >
-              <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+              </svg>
+            </button>
+          )}
         </div>
         <p className={`text-center text-xs text-gray-500 ${helperMarginClass}`}>
           {helperText}
@@ -330,6 +356,7 @@ export default function ChatMessages({
   messagesEndRef,
   onChangeInput,
   onSubmit,
+  onCancel,
 }: ChatMessagesProps) {
   const [statusPhase, setStatusPhase] = useState<"prosesa" | "analiza" | "finaliza">("prosesa");
 
@@ -405,6 +432,7 @@ export default function ChatMessages({
                     helperText={INPUT_HELPER_TEXT}
                     formClassName="mt-4 space-y-3"
                     helperMarginClass="mt-3"
+                    onCancel={onCancel}
                   />
                 </div>
               </div>
@@ -498,6 +526,7 @@ export default function ChatMessages({
           helperText={INPUT_HELPER_TEXT}
           formClassName="max-w-3xl mx-auto space-y-3"
           helperMarginClass="mt-1"
+          onCancel={onCancel}
         />
       </div>
     </>
