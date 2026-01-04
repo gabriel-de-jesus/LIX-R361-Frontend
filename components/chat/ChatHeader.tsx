@@ -44,12 +44,12 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
         >
           Timor News
         </a>
-        <Link
+        {/* <Link
           href="/contact"
           className="hover:text-white whitespace-nowrap"
         >
           Kontaktu
-        </Link>
+        </Link> */}
       </nav>
 
       <button
