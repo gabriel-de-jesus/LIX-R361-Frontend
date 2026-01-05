@@ -71,7 +71,7 @@ export function SidebarContent({
 
   return (
     <>
-      {/* New Chat Button */}
+      {/* New Chat Button (edit-style icon) */}
       <div className="p-3">
         <button
           onClick={handleStartNewChat}
@@ -81,58 +81,153 @@ export function SidebarContent({
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth={2}
+            strokeWidth={1.8}
             stroke="currentColor"
             className="w-4 h-4"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            {/* 3/4 rounded square */}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8 5.25h6.25A3.25 3.25 0 0117.5 8.5V17A1.75 1.75 0 0115.75 18.75H8.5A2.25 2.25 0 016.25 16.5V9.75"
+            />
+            {/* pencil */}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M14.75 6.25l2 2-5.5 5.5-2.25.5.5-2.25 5.25-5.75z"
+            />
           </svg>
           {newChatLabel}
         </button>
       </div>
 
-      {/* Chat History */}
+      {/* Labadain services and Chat History */}
       <div className={chatListClassName}>
-        {chatHistory.map((chat) => (
-          <div
-            key={chat.id}
-            onClick={() => handleLoadChat(chat.id)}
-            className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mb-1 transition-all ${
-              currentChatId === chat.id
-                ? "bg-[#2A2A2A] text-white"
-                : "text-gray-400 hover:bg-[#2A2A2A] hover:text-white"
-            }`}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-sm">{chat.title}</div>
-              <div className="text-xs text-gray-500">
-                {new Date(chat.updatedAt).toLocaleDateString()}
-              </div>
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteChat(chat.id);
-              }}
-              className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-[#0D0D0D] rounded-lg transition-all"
+        {/* Labadain services (moved from top bar) */}
+        <div className="px-3 pt-1 pb-3">
+          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+            Labadain-nia produtu seluk
+          </div>
+          <div className="space-y-0.5 text-sm">
+            <a
+              href="https://old.labadain.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
+                fill="none"
                 stroke="currentColor"
-                className="w-4 h-4"
+                strokeWidth={1.7}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4 flex-shrink-0"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                />
+                {/* Chat bubble icon */}
+                <path d="M5.5 5.25h13a1.25 1.25 0 011.25 1.25v7a1.25 1.25 0 01-1.25 1.25H12l-3.5 3.25V14.75H5.5A1.25 1.25 0 014.25 13.5v-7A1.25 1.25 0 015.5 5.25z" />
               </svg>
-            </button>
+              <span className="truncate">Labadain R361</span>
+            </a>
+            <a
+              href="https://search.labadain.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.7}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4 flex-shrink-0"
+              >
+                {/* Search icon */}
+                <circle cx="10.5" cy="10.5" r="4.5" />
+                <path d="M14.5 14.5L19 19" />
+              </svg>
+              <span className="truncate">Labadain Search</span>
+            </a>
+            <a
+              href="https://www.timornews.tl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.7}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4 flex-shrink-0"
+              >
+                {/* News / article icon */}
+                <rect x="4" y="5" width="9.5" height="14" rx="1.5" />
+                <path d="M17 7h2.25A1.75 1.75 0 0121 8.75V17a2 2 0 01-2 2H13.5" />
+                <path d="M6.5 8.5h4.5" />
+                <path d="M6.5 11h4.5" />
+                <path d="M6.5 13.5H10" />
+              </svg>
+              <span className="truncate">Timor News</span>
+            </a>
           </div>
-        ))}
+        </div>
+
+        {user && chatHistory.length > 0 && (
+          <>
+            <div className="px-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+              Ita-nia konversa sira
+            </div>
+            {chatHistory.map((chat) => (
+              <div
+                key={chat.id}
+                onClick={() => handleLoadChat(chat.id)}
+                className={`group relative flex items-center gap-3 px-3 py-1.5 rounded-xl cursor-pointer mb-0.5 transition-all ${
+                  currentChatId === chat.id
+                    ? "bg-[#2A2A2A] text-white"
+                    : "text-gray-400 hover:bg-[#2A2A2A] hover:text-white"
+                }`}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm">{chat.title}</div>
+                  <div className="text-xs text-gray-500">
+                    {new Date(chat.updatedAt).toLocaleDateString()}
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteChat(chat.id);
+                  }}
+                  className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-[#0D0D0D] rounded-lg transition-all"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </>
+        )}
       </div>
 
       {/* User Info / Auth */}

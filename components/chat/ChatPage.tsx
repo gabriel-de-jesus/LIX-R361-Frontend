@@ -613,8 +613,26 @@ export default function ChatPage() {
                 onClick={startNewChat}
                 aria-label="New chat"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.8}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  {/* 3/4 rounded square */}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8 5.25h6.25A3.25 3.25 0 0117.5 8.5V17A1.75 1.75 0 0115.75 18.75H8.5A2.25 2.25 0 016.25 16.5V9.75"
+                  />
+                  {/* pencil */}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M14.75 6.25l2 2-5.5 5.5-2.25.5.5-2.25 5.25-5.75z"
+                  />
                 </svg>
               </button>
               <span className="pointer-events-none absolute top-full mt-2 left-0 px-1 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">

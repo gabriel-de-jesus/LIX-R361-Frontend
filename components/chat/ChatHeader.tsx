@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 
 interface ChatHeaderProps {
   onOpenMobileSidebar: () => void;
@@ -19,38 +18,7 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
         </div>
       </div>
 
-      <nav className="hidden md:flex items-center gap-4 text-sm text-gray-300">
-        <a
-          href="https://old.labadain.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-white whitespace-nowrap"
-        >
-          Labadain Chat R361
-        </a>
-        <a
-          href="https://search.labadain.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-white whitespace-nowrap"
-        >
-          Labadain Search
-        </a>
-        <a
-          href="https://www.timornews.tl"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-white whitespace-nowrap"
-        >
-          Timor News
-        </a>
-        {/* <Link
-          href="/contact"
-          className="hover:text-white whitespace-nowrap"
-        >
-          Kontaktu
-        </Link> */}
-      </nav>
+      {/* Top bar menus moved to sidebar */}
 
       <button
         type="button"
