@@ -71,33 +71,12 @@ export function SidebarContent({
 
   return (
     <>
-      {/* New Chat Button (edit-style icon) */}
+      {/* New Chat Button (text only when sidebar is open) */}
       <div className="p-3">
         <button
           onClick={handleStartNewChat}
-          className="w-full px-4 py-2.5 bg-[#0D0D0D] hover:bg-[#2A2A2A] text-gray-300 hover:text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-[#2A2A2A] text-sm"
+          className="w-full px-4 py-2.5 bg-[#0D0D0D] hover:bg-[#2A2A2A] text-gray-300 hover:text-white font-medium rounded-xl transition-all text-center border border-[#2A2A2A] text-sm"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.8}
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            {/* 3/4 rounded square */}
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8 5.25h6.25A3.25 3.25 0 0117.5 8.5V17A1.75 1.75 0 0115.75 18.75H8.5A2.25 2.25 0 016.25 16.5V9.75"
-            />
-            {/* pencil */}
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M14.75 6.25l2 2-5.5 5.5-2.25.5.5-2.25 5.25-5.75z"
-            />
-          </svg>
           {newChatLabel}
         </button>
       </div>
@@ -105,7 +84,7 @@ export function SidebarContent({
       {/* Labadain services and Chat History */}
       <div className={chatListClassName}>
         {/* Labadain services (moved from top bar) */}
-        <div className="px-3 pt-1 pb-3">
+        <div className="px-3 pt-2 pb-3">
           <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
             Labadain-nia produtu seluk
           </div>
@@ -124,7 +103,7 @@ export function SidebarContent({
                 strokeWidth={1.7}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="w-4 h-4 flex-shrink-0"
+                className="w-5 h-5 flex-shrink-0"
               >
                 {/* Chat bubble icon */}
                 <path d="M5.5 5.25h13a1.25 1.25 0 011.25 1.25v7a1.25 1.25 0 01-1.25 1.25H12l-3.5 3.25V14.75H5.5A1.25 1.25 0 014.25 13.5v-7A1.25 1.25 0 015.5 5.25z" />
@@ -145,11 +124,12 @@ export function SidebarContent({
                 strokeWidth={1.7}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="w-4 h-4 flex-shrink-0"
+                className="w-5 h-5 flex-shrink-0"
               >
-                {/* Search icon */}
-                <circle cx="10.5" cy="10.5" r="4.5" />
-                <path d="M14.5 14.5L19 19" />
+                {/* External link icon for search engine */}
+                <path d="M9.75 5.75h-3a1 1 0 00-1 1v11.5a1 1 0 001 1h11.5a1 1 0 001-1v-3" />
+                <path d="M14 5h5v5" />
+                <path d="M14 10L19 5" />
               </svg>
               <span className="truncate">Labadain Search</span>
             </a>
@@ -167,7 +147,7 @@ export function SidebarContent({
                 strokeWidth={1.7}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="w-4 h-4 flex-shrink-0"
+                className="w-5 h-5 flex-shrink-0"
               >
                 {/* News / article icon */}
                 <rect x="4" y="5" width="9.5" height="14" rx="1.5" />
@@ -183,7 +163,7 @@ export function SidebarContent({
 
         {user && chatHistory.length > 0 && (
           <>
-            <div className="px-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+            <div className="px-3 pt-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">
               Ita-nia konversa sira
             </div>
             {chatHistory.map((chat) => (

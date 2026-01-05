@@ -546,7 +546,7 @@ export default function ChatPage() {
                   <path d="M15.75 19.5L9.25 12l6.5-7.5" />
                 </svg>
               </button>
-              <span className="pointer-events-none absolute -bottom-8 right-0 px-2 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
+              <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-[#1A1A1A] text-[11px] text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
                 Minimiza
               </span>
             </div>
@@ -609,42 +609,110 @@ export default function ChatPage() {
             <div className="relative group">
               <button
                 type="button"
-                className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-[#232323] text-[#20B8CD] hover:text-white hover:bg-[#232323] transition-colors"
                 onClick={startNewChat}
                 aria-label="New chat"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
                   fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.8}
                   stroke="currentColor"
-                  className="w-6 h-6"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5"
                 >
-                  {/* 3/4 rounded square */}
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8 5.25h6.25A3.25 3.25 0 0117.5 8.5V17A1.75 1.75 0 0115.75 18.75H8.5A2.25 2.25 0 016.25 16.5V9.75"
-                  />
-                  {/* pencil */}
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.75 6.25l2 2-5.5 5.5-2.25.5.5-2.25 5.25-5.75z"
-                  />
+                  <line x1="10" y1="4" x2="10" y2="16" />
+                  <line x1="4" y1="10" x2="16" y2="10" />
                 </svg>
               </button>
-              <span className="pointer-events-none absolute top-full mt-2 left-0 px-1 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                Konversa Foun
-              </span>
+            </div>
+            {/* Labadain products */}
+            <div className="flex flex-col items-center space-y-3 mt-2">
+              <div className="relative group">
+                <a
+                  href="https://old.labadain.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+                  aria-label="Labadain R361"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.7}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-6 h-6"
+                  >
+                    <path d="M5.5 5.25h13a1.25 1.25 0 011.25 1.25v7a1.25 1.25 0 01-1.25 1.25H12l-3.5 3.25V14.75H5.5A1.25 1.25 0 014.25 13.5v-7A1.25 1.25 0 015.5 5.25z" />
+                  </svg>
+                  <span className="text-[11px] text-gray-400 text-center">Labadain R361</span>
+                </a>
+              </div>
+              <div className="relative group">
+                <a
+                  href="https://search.labadain.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+                  aria-label="Labadain Search"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.7}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-6 h-6"
+                  >
+                    {/* External link icon for search engine */}
+                    <path d="M9.75 5.75h-3a1 1 0 00-1 1v11.5a1 1 0 001 1h11.5a1 1 0 001-1v-3" />
+                    <path d="M14 5h5v5" />
+                    <path d="M14 10L19 5" />
+                  </svg>
+                  <span className="text-[11px] text-gray-400 text-center">Labadain Search</span>
+                </a>
+              </div>
+              <div className="relative group">
+                <a
+                  href="https://www.timornews.tl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+                  aria-label="Timor News"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.7}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-6 h-6"
+                  >
+                    <rect x="4" y="5" width="9.5" height="14" rx="1.5" />
+                    <path d="M17 7h2.25A1.75 1.75 0 0121 8.75V17a2 2 0 01-2 2H13.5" />
+                    <path d="M6.5 8.5h4.5" />
+                    <path d="M6.5 11h4.5" />
+                    <path d="M6.5 13.5H10" />
+                  </svg>
+                  <span className="text-[11px] text-gray-400 text-center">Timor News</span>
+                </a>
+              </div>
             </div>
           </div>
           <div className="flex flex-col items-center w-full pb-4">
             <div className="relative group">
               <button
                 type="button"
-                className="p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
+                className="flex flex-col items-center gap-1 p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
                 onClick={user ? handleLogout : () => setShowAuth(true)}
                 aria-label={user ? "Logout" : "Login"}
               >
@@ -665,10 +733,10 @@ export default function ChatPage() {
                     </svg>
                   </span>
                 )}
+                <span className="text-[11px] text-gray-400 text-center">
+                  {user ? "Logout" : "Login"}
+                </span>
               </button>
-              <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
-                {user ? "Logout" : "Login"}
-              </span>
             </div>
           </div>
         </div>
