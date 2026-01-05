@@ -627,6 +627,9 @@ export default function ChatPage() {
                   <line x1="4" y1="10" x2="16" y2="10" />
                 </svg>
               </button>
+              <span className="pointer-events-none absolute top-full left-0 ml-0.5 mt-1 px-1 rounded bg-[#1A1A1A] text-[11px] text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
+                Konversa Foun
+              </span>
             </div>
             {/* Labadain products */}
             <div className="flex flex-col items-center space-y-3 mt-2">
