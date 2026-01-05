@@ -8,6 +8,7 @@ import AuthModal from "./AuthModal";
 
 export default function ChatPage() {
   const [pendingDeleteId, setPendingDeleteId] = useState<string | number | null>(null);
+  const [pendingLogout, setPendingLogout] = useState(false);
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -222,6 +223,10 @@ export default function ChatPage() {
     setCurrentChatId(null);
     setChatHistory([]);
     setSelectedTools([]);
+  };
+
+  const requestLogout = () => {
+    setPendingLogout(true);
   };
 
   const saveChat = async (msgs: Message[]) => {
@@ -565,7 +570,7 @@ export default function ChatPage() {
             onStartNewChat={startNewChat}
             onLoadChat={loadChat}
             onDeleteChat={requestDeleteChat}
-            onLogout={handleLogout}
+            onLogout={requestLogout}
             onShowAuth={() => setShowAuth(true)}
             newChatLabel="Konversa Foun"
             authButtonLabel={user ? "Logout" : "Login"}
@@ -723,7 +728,7 @@ export default function ChatPage() {
               <button
                 type="button"
                 className="flex flex-col items-center gap-1 p-2 rounded-lg text-gray-300 hover:bg-[#232323] hover:text-white transition-colors"
-                onClick={user ? handleLogout : () => setShowAuth(true)}
+                onClick={user ? requestLogout : () => setShowAuth(true)}
                 aria-label={user ? "Logout" : "Login"}
               >
                 {user ? (
@@ -761,10 +766,40 @@ export default function ChatPage() {
         onStartNewChat={startNewChat}
         onLoadChat={loadChat}
         onDeleteChat={requestDeleteChat}
-        onLogout={handleLogout}
+        onLogout={requestLogout}
         onShowAuth={() => setShowAuth(true)}
         onCloseMobileSidebar={() => setIsMobileSidebarOpen(false)}
       />
+
+        {pendingLogout && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
+            <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
+              <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
+              <p className="text-sm text-gray-300 mb-4">
+                Ita-boot hakarak sai hosi Labadain LIX-R361?
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPendingLogout(false)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-200 bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors"
+                >
+                  Lae
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleLogout();
+                    setPendingLogout(false);
+                  }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
+                >
+                  Loos
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       <div className={`flex flex-col flex-1 ${!isDesktopSidebarOpen ? 'lg:ml-16' : ''}`}> 
         <ChatHeader onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)} />

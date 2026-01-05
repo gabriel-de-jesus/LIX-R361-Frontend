@@ -176,7 +176,7 @@ interface ChatInputWithSuggestionsProps {
 function WelcomeText() {
   return (
     <>
-      <h2 className="text-3xl font-semibold mb-3 text-white">Ita sei konversa ho Labadain</h2>
+      <h2 className="text-3xl font-semibold mb-1.5 text-white">Ita sei konversa ho Labadain</h2>
       <p className="text-gray-400 text-lg">Ita-nia asistente AI ba Tetun</p>
     </>
   );
