@@ -1,31 +1,3 @@
-// PopupBox for error/info messages
-function PopupBox({ open, message, onClose }: { open: boolean; message: string; onClose: () => void }) {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
-        <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
-        <p className="text-sm text-gray-300 mb-4 flex items-center gap-2">
-          {message}
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="#FBBF24" className="w-5 h-5 inline-block">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </p>
-        <div className="flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
-          >
-            OK
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Analytics } from "@vercel/analytics/next"
 import React, { FormEvent, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -82,8 +54,6 @@ const renderContent = (text: string) => {
                   {...props}
                 >
                   {children}
-                  <SpeedInsights />
-                  <Analytics />
                 </code>
               );
             }
@@ -268,6 +238,33 @@ function ChatInputWithSuggestions({
     );
   };
 
+  // PopupBox for error/info messages
+function PopupBox({ open, message, onClose }: { open: boolean; message: string; onClose: () => void }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
+        <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
+        <p className="text-sm text-gray-300 mb-4 flex items-center gap-2">
+          {message}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="#FBBF24" className="w-5 h-5 inline-block">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+  
   // Wrap the onSubmit to clear file after submit and pass file to parent
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     onSubmit(e, selectedFile);
