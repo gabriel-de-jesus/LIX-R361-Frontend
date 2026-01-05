@@ -34,6 +34,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import { Message, User } from "./types";
+import { MessageActions } from "./MessageActions";
 
 const INPUT_PLACEHOLDER = "Husu Labadain iha-ne'e...";
 const INPUT_HELPER_TEXT = "Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.";
@@ -441,7 +442,7 @@ export default function ChatMessages({
 
           <div className="space-y-8">
             {messages.map((msg, i) => (
-              <div key={i} className="group">
+              <div key={msg.id ?? i} className="group">
                 {msg.role === "user" ? (
                   <div className="flex gap-4 items-start">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 overflow-hidden">
@@ -499,6 +500,13 @@ export default function ChatMessages({
                     </div>
                     <div className="flex-1 pt-1">
                       {renderContent(msg.content)}
+                      {msg.content && !msg.streaming && (
+                        <MessageActions
+                          messageId={msg.id}
+                          messageContent={msg.content}
+                          userId={user?.id}
+                        />
+                      )}
                     </div>
                   </div>
                 )}

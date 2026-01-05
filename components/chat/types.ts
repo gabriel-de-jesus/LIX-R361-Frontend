@@ -2,6 +2,7 @@ export interface Message {
   role: "user" | "assistant" | "system";
   content: string;
   streaming?: boolean;
+  id?: number;
 }
 
 export interface User {
@@ -19,4 +20,13 @@ export interface Chat {
   messages: Message[];
   createdAt: number | string;
   updatedAt: number | string;
+}
+
+export interface MessageInteractionCounts {
+  likes: number;
+  dislikes: number;
+  copies: number;
+  share_fb: number;
+  share_linkedin: number;
+  share_link: number;
 }

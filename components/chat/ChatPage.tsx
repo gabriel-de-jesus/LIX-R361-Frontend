@@ -236,17 +236,18 @@ export default function ChatPage() {
       const body = await res.json();
       const chatId = body.chat_id;
       const updatedAt = body.updated_at;
+      const savedMessages: Message[] = body.messages || msgs;
 
       const updated = [...chatHistory];
       const idx = currentChatId ? updated.findIndex(c => c.id === currentChatId) : -1;
       
       if (idx !== -1) {
-        updated[idx] = { ...updated[idx], messages: msgs, updatedAt };
+        updated[idx] = { ...updated[idx], messages: savedMessages, updatedAt };
       } else {
         const newChat: Chat = {
           id: chatId,
-          title: msgs[0]?.content.slice(0, 40) || "New Chat",
-          messages: msgs,
+          title: savedMessages[0]?.content.slice(0, 40) || "New Chat",
+          messages: savedMessages,
           createdAt: updatedAt,
           updatedAt,
         };
@@ -255,6 +256,8 @@ export default function ChatPage() {
       }
 
       setChatHistory(updated);
+      // Ensure current messages state carries DB-backed IDs too
+      setMessages(savedMessages);
     } catch (err) {
       console.error(err);
     }
