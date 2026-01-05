@@ -25,6 +25,7 @@ export default function ChatPage() {
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(false);
   const [pendingSuggestion, setPendingSuggestion] = useState<string | null>(null);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -220,6 +221,7 @@ export default function ChatPage() {
     setMessages([]);
     setCurrentChatId(null);
     setChatHistory([]);
+    setSelectedTools([]);
   };
 
   const saveChat = async (msgs: Message[]) => {
@@ -274,6 +276,7 @@ export default function ChatPage() {
   const startNewChat = () => {
     setMessages([]);
     setCurrentChatId(null);
+    setSelectedTools([]);
   };
 
   const requestDeleteChat = (id: string | number) => {
@@ -319,6 +322,7 @@ export default function ChatPage() {
         formData.append("input_text", text);
         formData.append("file", file);
         formData.append("messages", JSON.stringify(messages));
+        formData.append("force_search", selectedTools.includes("Peskiza Web") ? "true" : "false");
         res = await fetch(`${API_BASE}/copilot/chat/upload`, {
           method: "POST",
           body: formData,
@@ -404,7 +408,10 @@ export default function ChatPage() {
         res = await fetch(`${API_BASE}/copilot/chat/stream`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: newMsgs }),
+          body: JSON.stringify({
+            messages: newMsgs,
+            force_search: selectedTools.includes("Peskiza Web"),
+          }),
           signal: controller.signal,
         });
 
@@ -594,7 +601,7 @@ export default function ChatPage() {
         </div>
       ) : (
         // Compact sidebar with icons only
-        <div className="hidden lg:flex flex-col w-16 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 h-full items-center py-4">
+        <div className="hidden lg:flex flex-col w-20 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 h-full items-center py-4">
           <div className="flex flex-col items-center space-y-4 flex-1 w-full">
             <button
               type="button"
@@ -759,7 +766,7 @@ export default function ChatPage() {
         onCloseMobileSidebar={() => setIsMobileSidebarOpen(false)}
       />
 
-      <div className={`flex flex-col flex-1 ${!isDesktopSidebarOpen ? 'lg:ml-12' : ''}`}> 
+      <div className={`flex flex-col flex-1 ${!isDesktopSidebarOpen ? 'lg:ml-16' : ''}`}> 
         <ChatHeader onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)} />
 
         <ChatMessages
@@ -771,6 +778,7 @@ export default function ChatPage() {
           onChangeInput={setInput}
           onSubmit={handleSubmit}
           onCancel={handleCancelGeneration}
+          onToolsChange={setSelectedTools}
         />
       </div>
 

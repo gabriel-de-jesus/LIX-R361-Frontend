@@ -93,7 +93,7 @@ export function SidebarContent({
               href="https://old.labadain.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors mr-1"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +114,7 @@ export function SidebarContent({
               href="https://search.labadain.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors mr-1"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +137,7 @@ export function SidebarContent({
               href="https://www.timornews.tl"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors mr-1"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +170,7 @@ export function SidebarContent({
               <div
                 key={chat.id}
                 onClick={() => handleLoadChat(chat.id)}
-                className={`group relative flex items-center gap-3 px-3 py-1.5 rounded-xl cursor-pointer mb-0.5 transition-all ${
+                className={`group relative flex items-center gap-3 px-3 py-1.5 rounded-xl cursor-pointer mb-0.5 mr-1 transition-all ${
                   currentChatId === chat.id
                     ? "bg-[#2A2A2A] text-white"
                     : "text-gray-400 hover:bg-[#2A2A2A] hover:text-white"

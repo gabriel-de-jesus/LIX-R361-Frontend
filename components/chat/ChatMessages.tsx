@@ -49,6 +49,7 @@ interface ChatMessagesProps {
   onChangeInput: (value: string) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>, file?: File | null) => void;
   onCancel: () => void;
+  onToolsChange?: (tools: string[]) => void;
 }
 
 const renderContent = (text: string) => {
@@ -169,6 +170,7 @@ interface ChatInputWithSuggestionsProps {
   formClassName: string;
   helperMarginClass: string;
   onCancel: () => void;
+  onToolsChange?: (tools: string[]) => void;
 }
 
 function WelcomeText() {
@@ -191,11 +193,14 @@ function ChatInputWithSuggestions({
   formClassName,
   helperMarginClass,
   onCancel,
+  onToolsChange,
 }: ChatInputWithSuggestionsProps) {
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [fileError, setFileError] = React.useState<string>("");
   const [textError, setTextError] = React.useState<string>("");
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
+  const [toolDropdownOpen, setToolDropdownOpen] = React.useState(false);
+  const [selectedTools, setSelectedTools] = React.useState<string[]>([]);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -215,6 +220,29 @@ function ChatInputWithSuggestions({
   const handleDropdown = () => setDropdownOpen((v) => !v);
   const handleDropdownBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget)) setDropdownOpen(false);
+  };
+
+  const handleToolDropdownToggle = () => setToolDropdownOpen((v) => !v);
+  const handleToolDropdownBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) setToolDropdownOpen(false);
+  };
+
+  const handleSelectTool = (tool: string) => {
+    setSelectedTools((current) => {
+      const next = current.includes(tool)
+        ? current.filter((t) => t !== tool)
+        : [...current, tool];
+      onToolsChange?.(next);
+      return next;
+    });
+    setToolDropdownOpen(false);
+  };
+  const handleClearTool = (tool: string) => {
+    setSelectedTools((current) => {
+      const next = current.filter((t) => t !== tool);
+      onToolsChange?.(next);
+      return next;
+    });
   };
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -260,91 +288,223 @@ function ChatInputWithSuggestions({
           onChange={handleFileChange}
           disabled={loading}
         />
-        <div className="relative flex items-center">
-          {/* Plus icon with dropdown */}
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10" tabIndex={0} onBlur={handleDropdownBlur}>
-            <button
-              type="button"
-              className="flex items-center justify-center w-7 h-7 rounded-full bg-[#232323] text-[#20B8CD] hover:text-white hover:bg-[#1BA5BA] focus:outline-none focus:ring-2 focus:ring-[#20B8CD] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed"
-              onClick={handleDropdown}
-              aria-label="More options"
+        <div className="relative w-full bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl px-3 pt-2 pb-3">
+          {/* First line: text input */}
+          <div className="w-full mb-4">
+            <input
+              type="text"
+              value={input}
+              onChange={handleTextChange}
+              placeholder={placeholder}
+              className="w-full bg-transparent border-none focus:outline-none text-white placeholder-gray-500 text-lg"
               disabled={loading}
-            >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/></svg>
-            </button>
-            {dropdownOpen && (
-              <div className="absolute left-0 mt-2 min-w-fit bg-[#181818] border border-[#232323] rounded-lg shadow-lg py-1 px-1 animate-fade-in whitespace-nowrap" tabIndex={-1}>
-                <button
-                  type="button"
-                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#232323] flex items-center gap-2 whitespace-nowrap"
-                  onClick={() => { fileInputRef.current?.click(); }}
-                >
-                  {/* paperclip icon */}
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" className="inline-block">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 13.5l-5.25 5.25a3 3 0 01-4.24-4.24l9-9a2.121 2.121 0 013 3l-9 9" />
-                  </svg>
-                  Karrega fixeiru (Max. 15KB)
-                </button>
-              </div>
-            )}
+            />
           </div>
-          <input
-            type="text"
-            value={input}
-            onChange={handleTextChange}
-            placeholder={placeholder}
-            className={`w-full px-12 py-4 pr-14 bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#20B8CD] focus:border-transparent text-white placeholder-gray-500 transition-all text-base ${selectedFile ? 'pr-28' : ''}`}
-            disabled={loading}
-          />
-          {/* File preview inside input */}
+          {/* File preview just below input, aligned left */}
           {selectedFile && (
-            <span className="absolute right-16 top-1/2 -translate-y-1/2 flex items-center bg-[#232323] px-2 py-1 rounded text-xs text-[#20B8CD] max-w-[120px] truncate">
-              <span className="truncate mr-1">{selectedFile.name}</span>
-              <button type="button" onClick={handleRemoveFile} className="ml-1 text-gray-400 hover:text-red-400 focus:outline-none">&times;</button>
-            </span>
-          )}
-          {loading ? (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 group">
+            <div className="mb-2 flex items-center justify-between gap-2 text-xs text-[#20B8CD] bg-[#232323] rounded px-2 py-1">
+              <span className="truncate mr-1 max-w-[200px]">{selectedFile.name}</span>
               <button
                 type="button"
-                onClick={onCancel}
-                className="p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] text-white rounded-xl transition-all"
-                aria-label="Cancel generation"
+                onClick={handleRemoveFile}
+                className="ml-1 text-gray-400 hover:text-red-400 focus:outline-none"
+              >
+                &times;
+              </button>
+            </div>
+          )}
+          {/* Second line: actions + submit/cancel */}
+          <div className="flex items-center justify-between mt-6">
+            <div className="flex items-center gap-2">
+              {/* Clip icon with dropdown */}
+              <div className="relative group" tabIndex={0} onBlur={handleDropdownBlur}>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#2A2A2A] bg-transparent text-sm text-gray-200 hover:border-[#20B8CD] hover:bg-[#232323] focus:outline-none focus:ring-2 focus:ring-[#20B8CD] disabled:opacity-60 disabled:cursor-not-allowed"
+                  onClick={handleDropdown}
+                  aria-label="More options"
+                  disabled={loading}
+                >
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#232323] text-[#20B8CD]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3 3 0 014.24 4.24L9.88 16.12a1 1 0 01-1.41-1.41l7.78-7.78"
+                      />
+                    </svg>
+                  </span>
+                  <span className="text-sm hidden sm:inline">Aneksu</span>
+                </button>
+                {dropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-2 min-w-fit bg-[#181818] border border-[#232323] rounded-lg shadow-lg py-1 px-1 animate-fade-in whitespace-nowrap"
+                    tabIndex={-1}
+                  >
+                    <button
+                      type="button"
+                      className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#232323] flex items-center gap-2 whitespace-nowrap"
+                      onClick={() => {
+                        fileInputRef.current?.click();
+                      }}
+                    >
+                      {/* paperclip icon */}
+                      <svg
+                        width="18"
+                        height="18"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        className="inline-block"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3 3 0 014.24 4.24L9.88 16.12a1 1 0 01-1.41-1.41l7.78-7.78"
+                        />
+                      </svg>
+                      Karrega fixeiru (Max. 15KB)
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Ferramenta button with dropdown */}
+              <div className="relative group" tabIndex={0} onBlur={handleToolDropdownBlur}>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#2A2A2A] bg-transparent text-sm text-gray-200 hover:border-[#20B8CD] hover:bg-[#232323] focus:outline-none focus:ring-2 focus:ring-[#20B8CD] disabled:opacity-60 disabled:cursor-not-allowed"
+                  onClick={handleToolDropdownToggle}
+                  aria-label="Hili ferramenta"
+                  disabled={loading}
+                >
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#232323] text-[#20B8CD]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4"
+                    >
+                      {/* magic-wand style tools icon */}
+                      <path d="M5 19l6-6" />
+                      <rect x="11" y="5" width="5" height="5" rx="1.2" />
+                      <path d="M8 5.5L7.2 4" />
+                      <path d="M6 8l-1.5.8" />
+                      <path d="M16.5 15l1 .5" />
+                      <path d="M15.5 6L17 5.2" />
+                    </svg>
+                  </span>
+                  <span className="text-sm hidden sm:inline">Ferramenta</span>
+                </button>
+                {selectedTools.map((tool) => (
+                  <span
+                    key={tool}
+                    className="ml-1 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#232323] text-xs text-[#20B8CD] whitespace-nowrap"
+                  >
+                    <span>{tool}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleClearTool(tool)}
+                      className="text-gray-400 hover:text-red-400 focus:outline-none"
+                      aria-label="Hasai ferramenta selecionada"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+                {toolDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-2 min-w-fit bg-[#181818] border border-[#232323] rounded-lg shadow-lg py-1 px-1 animate-fade-in whitespace-nowrap"
+                    tabIndex={-1}
+                  >
+                    <button
+                      type="button"
+                      className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[#232323] flex items-center gap-2 whitespace-nowrap"
+                      onClick={() => handleSelectTool("Peskiza Web")}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
+                      >
+                        <circle cx="12" cy="12" r="8" />
+                        <path d="M4 12h16" />
+                        <path d="M12 4a9 9 0 010 16" className="opacity-80" />
+                        <path d="M9 4.5a13 13 0 000 15" className="opacity-80" />
+                      </svg>
+                      Peskiza Web
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            {loading ? (
+              <div className="relative group">
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] text-white rounded-xl transition-all"
+                  aria-label="Cancel generation"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <rect x="7" y="7" width="10" height="10" rx="2" />
+                  </svg>
+                </button>
+                <span className="pointer-events-none absolute -top-8 right-1/2 translate-x-1/2 px-2 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
+                  Kansela
+                </span>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                disabled={!input.trim() && !selectedFile}
+                className="p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed text-white rounded-xl transition-all"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5"
                 >
-                  <rect x="7" y="7" width="10" height="10" rx="2" />
+                  <path d="M5 12h14" />
+                  <path d="M13 6l6 6-6 6" />
                 </svg>
               </button>
-              <span className="pointer-events-none absolute -top-8 right-1/2 translate-x-1/2 px-2 py-1 rounded bg-[#1A1A1A] text-xs text-gray-200 border border-[#2A2A2A] opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all whitespace-nowrap">
-                Kansela
-              </span>
-            </div>
-          ) : (
-            <button
-              type="submit"
-              disabled={!input.trim() && !selectedFile}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-[#20B8CD] hover:bg-[#1BA5BA] disabled:bg-[#2A2A2A] disabled:cursor-not-allowed text-white rounded-xl transition-all"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-5 h-5"
-              >
-                <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-              </svg>
-            </button>
-          )}
+            )}
+          </div>
         </div>
-        <p className={`text-center text-xs text-gray-500 ${helperMarginClass}`}>
+      </form>
+      {helperText && (
+        <p className={`${helperMarginClass} text-xs text-gray-400 text-center`}>
           {helperText}
         </p>
-      </form>
+      )}
     </>
   );
 }
@@ -358,6 +518,7 @@ export default function ChatMessages({
   onChangeInput,
   onSubmit,
   onCancel,
+  onToolsChange,
 }: ChatMessagesProps) {
   const [statusPhase, setStatusPhase] = useState<"prosesa" | "analiza" | "finaliza">("prosesa");
 
@@ -434,6 +595,7 @@ export default function ChatMessages({
                     formClassName="mt-4 space-y-3"
                     helperMarginClass="mt-3"
                     onCancel={onCancel}
+                    onToolsChange={onToolsChange}
                   />
                 </div>
               </div>
@@ -535,6 +697,7 @@ export default function ChatMessages({
           formClassName="max-w-3xl mx-auto space-y-3"
           helperMarginClass="mt-1"
           onCancel={onCancel}
+          onToolsChange={onToolsChange}
         />
       </div>
     </>
