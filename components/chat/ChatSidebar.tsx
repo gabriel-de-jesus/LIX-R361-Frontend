@@ -256,22 +256,7 @@ export default function ChatSidebar({
   onShowAuth,
   onCloseMobileSidebar,
 }: ChatSidebarProps) {
-  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | number | null>(null);
 
-  const handleRequestDeleteChat = (id: string | number) => {
-    setPendingDeleteId(id);
-  };
-
-  const handleConfirmDelete = () => {
-    if (pendingDeleteId !== null) {
-      onDeleteChat(pendingDeleteId);
-      setPendingDeleteId(null);
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setPendingDeleteId(null);
-  };
 
   return (
     <>
@@ -304,12 +289,12 @@ export default function ChatSidebar({
               chatHistory={chatHistory}
               currentChatId={currentChatId}
               user={user}
-              onStartNewChat={onStartNewChat}
-              onLoadChat={onLoadChat}
-              onDeleteChat={handleRequestDeleteChat}
+              onStartNewChat={() => { onStartNewChat(); onCloseMobileSidebar(); }}
+              onLoadChat={(id) => { onLoadChat(id); onCloseMobileSidebar(); }}
+              onDeleteChat={onDeleteChat}
               onLogout={onLogout}
               onShowAuth={onShowAuth}
-              onAfterAction={onCloseMobileSidebar}
+              // Do not close sidebar on delete, only on navigation actions
               newChatLabel="Konversa Foun"
               authButtonLabel="Login"
               chatListClassName="flex-1 overflow-y-auto px-2 py-2"
@@ -319,32 +304,7 @@ export default function ChatSidebar({
         </div>
       )}
 
-      {pendingDeleteId !== null && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
-          <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
-            <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
-            <p className="text-sm text-gray-300 mb-4">
-              Ita-boot hakarak apaga tiha konversa ida-ne'e?
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={handleCancelDelete}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-200 bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors"
-              >
-                Lae
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmDelete}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
-              >
-                Apaga
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </>
   );
 }

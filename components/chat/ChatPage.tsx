@@ -36,29 +36,30 @@ export default function ChatPage() {
     }
   }, []);
 
-  useEffect(() => {
+  // Fetch chats for the user
+  const fetchChats = async () => {
     if (!user) {
       setChatHistory([]);
       setMessages([]);
       setCurrentChatId(null);
       return;
     }
+    try {
+      const res = await fetch(`${API_BASE}/chats?user_id=${user.id}`);
+      if (!res.ok) throw new Error("Failed to load chats");
+      const data = await res.json();
+      setChatHistory(data.chats || []);
+      setMessages([]);
+      setCurrentChatId(null);
+    } catch (err) {
+      console.error(err);
+      setChatHistory([]);
+    }
+  };
 
-    const fetchChats = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/chats?user_id=${user.id}`);
-        if (!res.ok) throw new Error("Failed to load chats");
-        const data = await res.json();
-        setChatHistory(data.chats || []);
-        setMessages([]);
-        setCurrentChatId(null);
-      } catch (err) {
-        console.error(err);
-        setChatHistory([]);
-      }
-    };
-
+  useEffect(() => {
     fetchChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, API_BASE]);
 
   useEffect(() => {
@@ -532,6 +533,34 @@ export default function ChatPage() {
   return (
     <div className="relative flex h-screen bg-[#0D0D0D]">
 
+      {/* Global confirmation dialog for chat deletion (overlays both mobile and desktop) */}
+      {pendingDeleteId !== null && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60">
+          <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
+            <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
+            <p className="text-sm text-gray-300 mb-4">
+              Ita-boot hakarak apaga tiha konversa ida-ne'e?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={cancelDeleteChat}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-200 bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors"
+              >
+                Lae
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteChat}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
+              >
+                Apaga
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Desktop Sidebar: full or compact */}
       {isDesktopSidebarOpen ? (
         <div className="hidden lg:flex lg:flex-col w-72 bg-[#0D0D0D] border-r border-[#2A2A2A] z-20 relative h-full">
@@ -577,32 +606,6 @@ export default function ChatPage() {
             chatListClassName="flex-1 overflow-y-auto px-2"
             userSectionClassName="p-3"
           />
-          {pendingDeleteId !== null && (
-            <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
-              <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
-                <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
-                <p className="text-sm text-gray-300 mb-4">
-                  Ita-boot hakarak apaga tiha konversa ida-ne'e?
-                </p>
-                <div className="flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={cancelDeleteChat}
-                    className="px-4 py-2 rounded-lg text-sm font-medium text-gray-200 bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors"
-                  >
-                    Lae
-                  </button>
-                  <button
-                    type="button"
-                    onClick={confirmDeleteChat}
-                    className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
-                  >
-                    Apaga
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       ) : (
         // Compact sidebar with icons only
@@ -768,7 +771,10 @@ export default function ChatPage() {
         onDeleteChat={requestDeleteChat}
         onLogout={requestLogout}
         onShowAuth={() => setShowAuth(true)}
-        onCloseMobileSidebar={() => setIsMobileSidebarOpen(false)}
+        onCloseMobileSidebar={() => {
+          setIsMobileSidebarOpen(false);
+          setPendingDeleteId(null);
+        }}
       />
 
         {pendingLogout && (
