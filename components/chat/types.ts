@@ -26,7 +26,4 @@ export interface MessageInteractionCounts {
   likes: number;
   dislikes: number;
   copies: number;
-  share_fb: number;
-  share_linkedin: number;
-  share_link: number;
 }

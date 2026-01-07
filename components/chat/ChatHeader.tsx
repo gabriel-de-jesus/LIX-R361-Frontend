@@ -6,8 +6,30 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
   return (
-    <div className="bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+    <div className="bg-[#0D0D0D] px-4 lg:px-6 py-4 flex items-center sticky top-0 z-10">
       <div className="flex items-center flex-1 min-w-0">
+        {/* Mobile: wrap / hamburger icon on the left */}
+        <button
+          type="button"
+          className="md:hidden p-2 mr-3 rounded-lg border border-[#2A2A2A] text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors flex-shrink-0"
+          onClick={onOpenMobileSidebar}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
+          </svg>
+        </button>
+
         <div className="min-w-0">
           <h1 className="text-xl font-semibold text-white truncate">
             Labadain LIX-R361
@@ -17,29 +39,6 @@ export default function ChatHeader({ onOpenMobileSidebar }: ChatHeaderProps) {
           </p>
         </div>
       </div>
-
-      {/* Top bar menus moved to sidebar */}
-
-      <button
-        type="button"
-        className="md:hidden p-2 rounded-lg border border-[#2A2A2A] text-gray-300 hover:bg-[#2A2A2A] hover:text-white transition-colors ml-3 flex-shrink-0"
-        onClick={onOpenMobileSidebar}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-5 h-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
-      </button>
     </div>
   );
 }

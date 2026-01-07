@@ -328,7 +328,7 @@ export default function ChatPage() {
         formData.append("file", file);
         formData.append("messages", JSON.stringify(messages));
         formData.append("force_search", selectedTools.includes("Peskiza Web") ? "true" : "false");
-        res = await fetch(`${API_BASE}/copilot/chat/upload`, {
+        res = await fetch(`${API_BASE}/chat/upload`, {
           method: "POST",
           body: formData,
           signal: controller.signal,
@@ -410,7 +410,7 @@ export default function ChatPage() {
         await saveChat(final);
       } else {
         // Streaming for normal text
-        res = await fetch(`${API_BASE}/copilot/chat/stream`, {
+        res = await fetch(`${API_BASE}/chat/stream`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
