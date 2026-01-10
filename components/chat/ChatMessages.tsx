@@ -24,8 +24,14 @@ interface ChatMessagesProps {
   onToolsChange?: (tools: string[]) => void;
 }
 
+const stripBareReferences = (text: string): string => {
+  // Remove standalone reference markers like [[1]] that are not part of a markdown link [[1]](url).
+  return text.replace(/(\[\[\d+\]\])(?!\()/g, "");
+};
+
 const renderContent = (text: string) => {
   if (!text) return null;
+  const cleaned = stripBareReferences(text);
 
   return (
     <div className="prose prose-invert max-w-none text-gray-200">
@@ -136,7 +142,7 @@ const renderContent = (text: string) => {
           ),
         }}
       >
-        {text}
+        {cleaned}
       </ReactMarkdown>
     </div>
   );
