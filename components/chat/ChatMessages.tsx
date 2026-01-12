@@ -253,7 +253,7 @@ function ChatInputWithSuggestions({
     onChangeInput(limited);
 
     setTextError(
-      "Ita-boot nia testu liu ona limite. Labadain rekomenda atu ita-boot bele tau ba fixeiru ida depois karrega ba iha plataforma."
+      "Ita-boot nia testu liu tiha ona limite. Labadain rekomenda atu ita-boot bele tau ba fixeiru ida depois karrega ba iha plataforma."
     );
   };
 
