@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Chat, User } from "./types";
 
 interface ChatSidebarProps {
@@ -10,6 +10,8 @@ interface ChatSidebarProps {
   onLoadChat: (id: string | number) => void;
   onDeleteChat: (id: string | number) => void;
   onLogout: () => void;
+   onEditProfile: () => void;
+   onDeleteAccount: () => void;
   onShowAuth: () => void;
   onCloseMobileSidebar: () => void;
 }
@@ -22,6 +24,8 @@ interface SidebarContentProps {
   onLoadChat: (id: string | number) => void;
   onDeleteChat: (id: string | number) => void;
   onLogout: () => void;
+    onEditProfile: () => void;
+    onDeleteAccount: () => void;
   onShowAuth: () => void;
   onAfterAction?: () => void;
   newChatLabel: string;
@@ -38,6 +42,8 @@ export function SidebarContent({
   onLoadChat,
   onDeleteChat,
   onLogout,
+  onEditProfile,
+  onDeleteAccount,
   onShowAuth,
   onAfterAction,
   newChatLabel,
@@ -45,6 +51,7 @@ export function SidebarContent({
   chatListClassName,
   userSectionClassName,
 }: SidebarContentProps) {
+  const [configOpen, setConfigOpen] = useState(false);
   const handleStartNewChat = () => {
     onStartNewChat();
     onAfterAction?.();
@@ -61,6 +68,19 @@ export function SidebarContent({
 
   const handleLogout = () => {
     onLogout();
+    setConfigOpen(false);
+    onAfterAction?.();
+  };
+
+  const handleEditProfile = () => {
+    onEditProfile();
+    setConfigOpen(false);
+    onAfterAction?.();
+  };
+
+  const handleDeleteAccount = () => {
+    onDeleteAccount();
+    setConfigOpen(false);
     onAfterAction?.();
   };
 
@@ -213,23 +233,59 @@ export function SidebarContent({
       {/* User Info / Auth */}
       <div className={userSectionClassName}>
         {user ? (
-          <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] flex items-center justify-center text-white font-semibold text-sm overflow-hidden">
-              {user.avatar_url ? (
-                <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
-              ) : (
-                user.name[0].toUpperCase()
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium truncate text-sm text-white">{user.name}</div>
-              <button
-                onClick={handleLogout}
-                className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+          <div className="px-3 py-2">
+            <button
+              type="button"
+              onClick={() => setConfigOpen((open) => !open)}
+              className="w-full flex items-center gap-3 text-left hover:bg-[#1A1A1A] rounded-xl px-2 py-2 transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#20B8CD] to-[#1BA5BA] flex items-center justify-center text-white font-semibold text-sm overflow-hidden">
+                {user.avatar_url ? (
+                  <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  user.name[0].toUpperCase()
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium truncate text-sm text-white">{user.name}</div>
+                <div className="text-xs text-gray-400">Konfigurasaun</div>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.7}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`w-4 h-4 text-gray-400 transition-transform ${configOpen ? "rotate-180" : "rotate-0"}`}
               >
-                Logout
-              </button>
-            </div>
+                <path d="M6 8l4 4 4-4" />
+              </svg>
+            </button>
+
+            {configOpen && (
+              <div className="mt-2 space-y-1 pl-2">
+                <button
+                  onClick={handleEditProfile}
+                  className="w-full text-xs text-gray-200 hover:text-white hover:bg-[#1A1A1A] rounded-lg px-2 py-1 text-left transition-colors"
+                >
+                  Troka naran
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-xs text-gray-400 hover:text-gray-200 hover:bg-[#1A1A1A] rounded-lg px-2 py-1 text-left transition-colors"
+                >
+                  Sai (logout)
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="w-full text-xs text-red-500 hover:text-red-300 hover:bg-[#1A1A1A] rounded-lg px-2 py-1 text-left transition-colors"
+                >
+                  Apaga konta
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <button
@@ -253,6 +309,8 @@ export default function ChatSidebar({
   onLoadChat,
   onDeleteChat,
   onLogout,
+  onEditProfile,
+  onDeleteAccount,
   onShowAuth,
   onCloseMobileSidebar,
 }: ChatSidebarProps) {
@@ -293,6 +351,8 @@ export default function ChatSidebar({
               onLoadChat={(id) => { onLoadChat(id); onCloseMobileSidebar(); }}
               onDeleteChat={onDeleteChat}
               onLogout={onLogout}
+              onEditProfile={onEditProfile}
+              onDeleteAccount={onDeleteAccount}
               onShowAuth={onShowAuth}
               // Do not close sidebar on delete, only on navigation actions
               newChatLabel="Konversa Foun"

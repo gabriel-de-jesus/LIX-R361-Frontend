@@ -9,6 +9,7 @@ import AuthModal from "./AuthModal";
 export default function ChatPage() {
   const [pendingDeleteId, setPendingDeleteId] = useState<string | number | null>(null);
   const [pendingLogout, setPendingLogout] = useState(false);
+  const [pendingAccountDelete, setPendingAccountDelete] = useState(false);
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -25,6 +26,8 @@ export default function ChatPage() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(false);
   const [pendingSuggestion, setPendingSuggestion] = useState<string | null>(null);
+  const [pendingNameChange, setPendingNameChange] = useState<string | null>(null);
+  const [accountDeleteSuccess, setAccountDeleteSuccess] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -147,6 +150,8 @@ export default function ChatPage() {
       });
 
       const response = await AppleID.auth.signIn();
+      // Debug: inspect raw Apple sign-in response
+      console.log("[Apple SignIn] raw response", response);
       const idToken: string | undefined = response?.authorization?.id_token;
 
       if (!idToken) {
@@ -158,6 +163,9 @@ export default function ChatPage() {
       const payloadJson = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
       const payload = JSON.parse(payloadJson);
 
+      // Debug: inspect decoded ID token payload
+      console.log("[Apple SignIn] id_token payload", payload);
+
       const email: string | undefined = payload.email || response?.user?.email;
       const nameFromPayload: string | undefined = payload.name;
       const nameFromUser: string | undefined = response?.user?.name
@@ -165,6 +173,9 @@ export default function ChatPage() {
         : undefined;
       const name: string | undefined = nameFromPayload || nameFromUser || (email ? email.split("@")[0] : undefined);
       const providerId: string | undefined = payload.sub;
+
+      // Debug: inspect derived identity fields
+      console.log("[Apple SignIn] derived fields", { email, name, providerId });
 
       if (!email || !name) {
         setAuthError("Autentikasaun ho Apple la hetan email ne'ebe validu.");
@@ -311,6 +322,81 @@ export default function ChatPage() {
 
   const requestLogout = () => {
     setPendingLogout(true);
+  };
+
+  const handleEditProfile = () => {
+    if (!user) return;
+    const currentName = user.name || "";
+    const newName = window.prompt("Troka ita-nia naran", currentName);
+    if (!newName) return;
+    const trimmed = newName.trim();
+    if (!trimmed || trimmed === currentName) return;
+
+    setPendingNameChange(trimmed);
+  };
+
+  const performNameUpdate = async () => {
+    if (!user || !pendingNameChange) return;
+
+    if (!user.token) {
+      setAuthError("La hetan token atu atualiza profil. Favór halo login fali.");
+      setPendingNameChange(null);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/profile/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.id, token: user.token, name: pendingNameChange }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body.detail as string) || "La konsege atualiza profil.");
+      }
+
+      const updatedUser = await res.json();
+      localStorage.setItem("labadain_user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      setAuthError("");
+    } catch (err) {
+      setAuthError((err as Error).message);
+    } finally {
+      setPendingNameChange(null);
+    }
+  };
+
+  const performDeleteAccount = async () => {
+    if (!user) return;
+    if (!user.token) {
+      setAuthError("La hetan token atu apaga konta. Favór halo login fali.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/delete-account`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.id, token: user.token }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body.detail as string) || "La konsege apaga konta.");
+      }
+
+      // On success, log the user out locally
+      handleLogout();
+      setAuthError("");
+      setAccountDeleteSuccess(true);
+    } catch (err) {
+      setAuthError((err as Error).message);
+    }
+  };
+
+  const requestDeleteAccount = () => {
+    setPendingAccountDelete(true);
   };
 
   const saveChat = async (msgs: Message[]) => {
@@ -683,6 +769,8 @@ export default function ChatPage() {
             onLoadChat={loadChat}
             onDeleteChat={requestDeleteChat}
             onLogout={requestLogout}
+            onEditProfile={handleEditProfile}
+            onDeleteAccount={requestDeleteAccount}
             onShowAuth={() => setShowAuth(true)}
             newChatLabel="Konversa Foun"
             authButtonLabel={user ? "Logout" : "Login"}
@@ -853,12 +941,91 @@ export default function ChatPage() {
         onLoadChat={loadChat}
         onDeleteChat={requestDeleteChat}
         onLogout={requestLogout}
+        onEditProfile={handleEditProfile}
+        onDeleteAccount={requestDeleteAccount}
         onShowAuth={() => setShowAuth(true)}
         onCloseMobileSidebar={() => {
           setIsMobileSidebarOpen(false);
           setPendingDeleteId(null);
         }}
       />
+
+        {pendingAccountDelete && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
+            <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
+              <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
+              <p className="text-sm text-gray-300 mb-4">
+                Ita-boot hakarak apaga tiha ita-nia konta Labadain? Operasaun ida-ne'e labele anula fali.
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPendingAccountDelete(false)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-200 bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors"
+                >
+                  Lae
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await performDeleteAccount();
+                    setPendingAccountDelete(false);
+                  }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-500 transition-colors"
+                >
+                  Apaga
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {accountDeleteSuccess && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
+            <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
+              <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
+              <p className="text-sm text-gray-300 mb-4">
+                Ita-nia konta apaga tiha ona ho susesu.
+              </p>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setAccountDeleteSuccess(false)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
+               >
+                  Di'ak
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {pendingNameChange && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
+            <div className="bg-[#0D0D0D] border border-[#2A2A2A] rounded-2xl px-6 py-5 w-full max-w-sm shadow-xl">
+              <h2 className="text-lg font-semibold text-white mb-2">Labadain LIX-R361</h2>
+              <p className="text-sm text-gray-300 mb-4">
+                Ita-boot hakarak troka ita-nia naran ba "{pendingNameChange}"?
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPendingNameChange(null)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-200 bg-[#1A1A1A] hover:bg-[#2A2A2A] transition-colors"
+                >
+                  Lae
+                </button>
+                <button
+                  type="button"
+                  onClick={performNameUpdate}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#20B8CD] hover:bg-[#1BA5BA] transition-colors"
+                >
+                  Loos
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {pendingLogout && (
           <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
