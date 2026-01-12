@@ -243,7 +243,7 @@ export function SidebarContent({
                 {user.avatar_url ? (
                   <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  user.name[0].toUpperCase()
+                  (user.name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || "U")
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -266,12 +266,14 @@ export function SidebarContent({
 
             {configOpen && (
               <div className="mt-2 space-y-1 pl-2">
-                <button
-                  onClick={handleEditProfile}
-                  className="w-full text-xs text-gray-200 hover:text-white hover:bg-[#1A1A1A] rounded-lg px-2 py-1 text-left transition-colors"
-                >
-                  Troka naran
-                </button>
+                {user.provider === "apple" && (
+                  <button
+                    onClick={handleEditProfile}
+                    className="w-full text-xs text-gray-200 hover:text-white hover:bg-[#1A1A1A] rounded-lg px-2 py-1 text-left transition-colors"
+                  >
+                    Troka naran
+                  </button>
+                )}
                 <button
                   onClick={handleLogout}
                   className="w-full text-xs text-gray-400 hover:text-gray-200 hover:bg-[#1A1A1A] rounded-lg px-2 py-1 text-left transition-colors"

@@ -103,8 +103,9 @@ export default function ChatPage() {
       }
 
       const authUser = await res.json();
-      localStorage.setItem("labadain_user", JSON.stringify(authUser));
-      setUser(authUser);
+      const extendedUser: User = { ...authUser, provider: "google" };
+      localStorage.setItem("labadain_user", JSON.stringify(extendedUser));
+      setUser(extendedUser);
       setShowAuth(false);
       setAuthError("");
 
@@ -194,8 +195,9 @@ export default function ChatPage() {
       }
 
       const authUser = await res.json();
-      localStorage.setItem("labadain_user", JSON.stringify(authUser));
-      setUser(authUser);
+      const extendedUser: User = { ...authUser, provider: "apple" };
+      localStorage.setItem("labadain_user", JSON.stringify(extendedUser));
+      setUser(extendedUser);
       setShowAuth(false);
       setAuthError("");
 
@@ -260,8 +262,9 @@ export default function ChatPage() {
         );
          setCanResendConfirmation(true);
       } else {
-        localStorage.setItem("labadain_user", JSON.stringify(authUser));
-        setUser(authUser);
+        const extendedUser: User = { ...authUser, provider: "email" };
+        localStorage.setItem("labadain_user", JSON.stringify(extendedUser));
+        setUser(extendedUser);
         setShowAuth(false);
         setCanResendConfirmation(false);
 

@@ -5,6 +5,8 @@ export interface Message {
   id?: number;
 }
 
+export type AuthProvider = "email" | "google" | "apple";
+
 export interface User {
   id: number;
   email: string;
@@ -12,6 +14,7 @@ export interface User {
   token?: string;
   avatar_url?: string;
   is_active?: boolean;
+  provider?: AuthProvider;
 }
 
 export interface Chat {
