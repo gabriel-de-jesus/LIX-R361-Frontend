@@ -115,6 +115,89 @@ export default function ChatPage() {
     }
   };
 
+  const handleAppleClick = async () => {
+    setAuthError("");
+
+    if (typeof window === "undefined") {
+      setAuthError("Login ho Apple la disponível.");
+      return;
+    }
+
+    const AppleID = (window as any).AppleID;
+
+    if (!AppleID || !AppleID.auth) {
+      setAuthError("Login ho Apple la karrega ho loloos. Favór atualiza pájina.");
+      return;
+    }
+
+    const appleClientId = process.env.NEXT_PUBLIC_APPLE_CLIENT_ID;
+    const appleRedirectURI = process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI;
+
+    if (!appleClientId || !appleRedirectURI) {
+      setAuthError("Login ho Apple seidauk konfigura (client ID/redirect URL falta).");
+      return;
+    }
+
+    try {
+      AppleID.auth.init({
+        clientId: appleClientId,
+        redirectURI: appleRedirectURI,
+        scope: "name email",
+        usePopup: true,
+      });
+
+      const response = await AppleID.auth.signIn();
+      const idToken: string | undefined = response?.authorization?.id_token;
+
+      if (!idToken) {
+        setAuthError("Login ho Apple la hetan token.");
+        return;
+      }
+
+      const [, payloadBase64] = idToken.split(".");
+      const payloadJson = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
+      const payload = JSON.parse(payloadJson);
+
+      const email: string | undefined = payload.email || response?.user?.email;
+      const nameFromPayload: string | undefined = payload.name;
+      const nameFromUser: string | undefined = response?.user?.name
+        ? `${response.user.name.firstName || ""} ${response.user.name.lastName || ""}`.trim()
+        : undefined;
+      const name: string | undefined = nameFromPayload || nameFromUser || (email ? email.split("@")[0] : undefined);
+      const providerId: string | undefined = payload.sub;
+
+      if (!email || !name) {
+        setAuthError("Autentikasaun ho Apple la hetan email ne'ebe validu.");
+        return;
+      }
+
+      const res = await fetch(`${API_BASE}/auth/apple`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, image: null, provider_id: providerId }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || "Autentikasaun ho Apple la susesu.");
+      }
+
+      const authUser = await res.json();
+      localStorage.setItem("labadain_user", JSON.stringify(authUser));
+      setUser(authUser);
+      setShowAuth(false);
+      setAuthError("");
+
+      if (pendingSuggestion) {
+        const textToSend = pendingSuggestion;
+        setPendingSuggestion(null);
+        await sendMessage(textToSend);
+      }
+    } catch (err) {
+      setAuthError((err as Error).message || "Autentikasaun ho Apple la susesu.");
+    }
+  };
+
   const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAuthError("");
@@ -838,6 +921,7 @@ export default function ChatPage() {
         onResendConfirmation={handleResendConfirmation}
         onGoogleSuccess={handleGoogleSuccess}
         onGoogleError={() => setAuthError("Google authentication failed.")}
+        onAppleClick={handleAppleClick}
       />
     </div>
   );

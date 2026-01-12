@@ -10,6 +10,7 @@ interface AuthModalProps {
   onToggleMode: () => void;
   onGoogleSuccess: (response: CredentialResponse) => void;
   onGoogleError: () => void;
+  onAppleClick: () => void;
   canResendConfirmation: boolean;
   onResendConfirmation: () => void;
 }
@@ -23,6 +24,7 @@ export default function AuthModal({
   onToggleMode,
   onGoogleSuccess,
   onGoogleError,
+  onAppleClick,
   canResendConfirmation,
   onResendConfirmation,
 }: AuthModalProps) {
@@ -89,13 +91,26 @@ export default function AuthModal({
             <span className="text-xs text-gray-500 uppercase tracking-wide">or</span>
             <div className="h-px bg-[#2A2A2A] flex-1" />
           </div>
-          <div className="mt-4 flex justify-center">
-            <GoogleLogin
-              onSuccess={onGoogleSuccess}
-              onError={onGoogleError}
-              shape="pill"
-              text={authMode === "login" ? "continue_with" : "signup_with"}
-            />
+          <div className="mt-4 flex flex-col gap-3 items-center">
+            <div className="w-[260px] flex justify-center">
+              <GoogleLogin
+                onSuccess={onGoogleSuccess}
+                onError={onGoogleError}
+                shape="pill"
+                text={authMode === "login" ? "continue_with" : "signup_with"}
+                width="260"
+              />
+            </div>
+            <div className="w-[260px] flex justify-center">
+              <button
+                type="button"
+                onClick={onAppleClick}
+                className="w-full h-10 bg-white text-black font-medium rounded-full inline-flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#1A1A1A]"
+              >
+                <span className="text-lg"></span>
+                <span>{authMode === "login" ? "Sign in with Apple" : "Sign up with Apple"}</span>
+              </button>
+            </div>
           </div>
           {authError && (
             <div className="mt-4 p-3 bg-red-900/20 border border-red-800/50 rounded-xl">

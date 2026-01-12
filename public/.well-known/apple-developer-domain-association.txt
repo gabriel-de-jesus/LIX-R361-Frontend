@@ -1,0 +1,2 @@
+# Paste here the exact contents of the apple-developer-domain-association.txt file downloaded from Apple Developer.
+# Do NOT modify this file manually; it must match Apple’s version byte-for-byte.
