@@ -9,7 +9,23 @@ import { Message, User } from "./types";
 import { MessageActions } from "./MessageActions";
 
 const INPUT_PLACEHOLDER = "Husu Labadain iha-ne'e...";
-const INPUT_HELPER_TEXT = "Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.";
+const INPUT_HELPER_TEXT = (
+  <>
+    Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.
+    <br />
+    {"Copyright LIX@"}
+    {new Date().getFullYear()}
+    {" | "}
+    <a
+      href="https://www.labadain.com/privasidade"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline"
+    >
+      Polítika Privasidade
+    </a>
+  </>
+);
 const MAX_WORDS = 120;
 
 interface ChatMessagesProps {
@@ -155,7 +171,7 @@ interface ChatInputWithSuggestionsProps {
   onChangeInput: (value: string) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>, file?: File | null) => void;
   placeholder: string;
-  helperText: string;
+  helperText: React.ReactNode;
   formClassName: string;
   helperMarginClass: string;
   onCancel: () => void;
