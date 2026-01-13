@@ -110,7 +110,9 @@ export default function AuthModal({
                 className="w-full h-10 bg-white text-black font-medium rounded-full inline-flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#1A1A1A]"
               >
                 <span className="text-lg"></span>
-                <span>{authMode === "login" ? "Sign in with Apple" : "Sign up with Apple"}</span>
+                <span className="text-sm">
+                  {authMode === "login" ? "Sign in with Apple" : "Sign up with Apple"}
+                </span>
               </button>
             </div>
           </div>
