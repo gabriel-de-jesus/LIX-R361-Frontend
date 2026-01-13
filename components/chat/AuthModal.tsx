@@ -97,7 +97,9 @@ export default function AuthModal({
                 onSuccess={onGoogleSuccess}
                 onError={onGoogleError}
                 shape="pill"
-                text={authMode === "login" ? "continue_with" : "signup_with"}
+                // Force English labels and use explicit sign-in/up wording
+                locale="en"
+                text={authMode === "login" ? "signin_with" : "signup_with"}
                 width="260"
               />
             </div>
