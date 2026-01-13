@@ -41,8 +41,37 @@ interface ChatMessagesProps {
 }
 
 const stripBareReferences = (text: string): string => {
-  // Remove standalone reference markers like [[1]] that are not part of a markdown link [[1]](url).
-  return text.replace(/(\[\[\d+\]\])(?!\()/g, "");
+  // Protect valid references of the form [[number]](link) so we don't touch them.
+  const placeholders: string[] = [];
+  let protectedText = text.replace(/\[\[\d+\]\]\([^)]*\)/g, (match) => {
+    const key = `__REF_${placeholders.length}__`;
+    placeholders.push(match);
+    return key;
+  });
+
+  // Remove stray reference markers like [[1]], [[2, [4]], etc.
+  // Keep only proper markdown reference links of the form [[1]](url).
+  protectedText = protectedText
+    // Remove complete [[number]] sequences not followed by '('
+    .replace(/(\[\[\d+\]\])(?!\()/g, "")
+    // Remove broken leading markers like "[[2" or "[[10"
+    .replace(/\[\[\d+/g, "")
+    // Remove broken trailing markers like "4]]" or "10]]"
+    .replace(/\d+\]\]/g, "")
+    // Remove stray "]] (link)" tails that are not part of protected references
+    .replace(/\]\]\([^)]*\)/g, "")
+    // Collapse multiple spaces that may result from removals
+    .replace(/ {2,}/g, " ")
+    // Remove spaces immediately before punctuation like "," or "."
+    .replace(/\s+([.,!?;:])/g, "$1")
+    // Normalize awkward punctuation sequences like ",." to just "."
+    .replace(/,\./g, ".");
+
+  // Restore protected valid references.
+  return protectedText.replace(/__REF_(\d+)__/g, (_m, idx) => {
+    const i = Number(idx);
+    return Number.isFinite(i) && i >= 0 && i < placeholders.length ? placeholders[i] : "";
+  });
 };
 
 const renderContent = (text: string) => {
