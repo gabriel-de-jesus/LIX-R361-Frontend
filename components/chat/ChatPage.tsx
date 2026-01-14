@@ -30,12 +30,22 @@ export default function ChatPage() {
   const [accountDeleteSuccess, setAccountDeleteSuccess] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  const [showIosAppPopup, setShowIosAppPopup] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedUser = localStorage.getItem("labadain_user");
       if (savedUser) setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  // Show a one-time popup announcing the iOS app.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const dismissed = window.localStorage.getItem("labadain_ios_app_popup_dismissed");
+    if (!dismissed) {
+      setShowIosAppPopup(true);
     }
   }, []);
 
@@ -68,6 +78,13 @@ export default function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const dismissIosAppPopup = () => {
+    setShowIosAppPopup(false);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("labadain_ios_app_popup_dismissed", "1");
+    }
+  };
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
@@ -704,6 +721,61 @@ export default function ChatPage() {
 
   return (
     <div className="relative flex h-screen bg-[#0D0D0D]">
+
+      {/* One-time popup announcing the iOS app */}
+      {showIosAppPopup && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-[#1A1A1A] border border-[#2A2A2A] shadow-2xl p-6 relative">
+            <button
+              type="button"
+              onClick={dismissIosAppPopup}
+              className="absolute top-3 right-3 text-gray-400 hover:text-white rounded-full p-1 hover:bg-[#2A2A2A] transition-colors"
+              aria-label="Taka avizu iOS"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <img
+                src="/ai-avatar.png"
+                alt="Labadain LIX-R361"
+                className="w-8 h-8 rounded-full shadow-sm"
+              />
+              <h2 className="text-xl font-semibold text-white">Labadain LIX-R361</h2>
+            </div>
+            <p className="text-sm text-gray-300 mb-4 text-center">
+              Labadain iha iOS ona no agora ita bele instala no uza iha iPhone.
+              Download aplikasaun LIX-R361 hosi App Store.
+            </p>
+            <a
+              href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full px-4 py-3 text-center text-sm font-medium rounded-xl bg-white text-black hover:bg-gray-100 transition-colors mb-2"
+            >
+              Loke iha App Store
+            </a>
+            <button
+              type="button"
+              onClick={dismissIosAppPopup}
+              className="w-full px-4 py-2 text-sm rounded-xl bg-[#0D0D0D] text-gray-200 hover:bg-[#232323] transition-colors"
+            >
+              Taka
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Global confirmation dialog for chat deletion (overlays both mobile and desktop) */}
       {pendingDeleteId !== null && (

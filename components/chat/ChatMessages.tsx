@@ -24,6 +24,18 @@ const INPUT_HELPER_TEXT = (
     >
       Polítika Privasidade
     </a>
+    {" | "}
+    <a
+      href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 underline"
+    >
+      <span role="img" aria-label="iOS">
+        
+      </span>
+      <span>Download iOS App</span>
+    </a>
   </>
 );
 const MAX_WORDS = 120;
