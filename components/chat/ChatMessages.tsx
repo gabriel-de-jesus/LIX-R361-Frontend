@@ -14,8 +14,9 @@ const INPUT_HELPER_TEXT = (
     Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.
     <br />
     <span className="text-xs">
-      {"LIX@"}
+      {"© "}
       {new Date().getFullYear()}
+      {" LIX"}
       {" | "}
       <a
         href="https://www.labadain.com/privasidade"
