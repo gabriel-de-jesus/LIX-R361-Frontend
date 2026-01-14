@@ -13,29 +13,31 @@ const INPUT_HELPER_TEXT = (
   <>
     Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.
     <br />
-    {"Copyright LIX@"}
-    {new Date().getFullYear()}
-    {" | "}
-    <a
-      href="https://www.labadain.com/privasidade"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="underline"
-    >
-      Polítika Privasidade
-    </a>
-    {" | "}
-    <a
-      href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-1 underline"
-    >
-      <span role="img" aria-label="iOS">
-        
-      </span>
-      <span>Download iOS App</span>
-    </a>
+    <span className="text-xs">
+      {"LIX@"}
+      {new Date().getFullYear()}
+      {" | "}
+      <a
+        href="https://www.labadain.com/privasidade"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline"
+      >
+        Polítika Privasidade
+      </a>
+      {" | "}
+      <a
+        href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 underline"
+      >
+        <span role="img" aria-label="iOS">
+          
+        </span>
+        <span>Download iOS App</span>
+      </a>
+    </span>
   </>
 );
 const MAX_WORDS = 120;

@@ -755,7 +755,7 @@ export default function ChatPage() {
               <h2 className="text-xl font-semibold text-white">Labadain LIX-R361</h2>
             </div>
             <p className="text-sm text-gray-300 mb-4 text-center">
-              Labadain iha iOS ona no agora ita bele instala no uza iha iPhone.
+              Labadain iha ona iOS ne'ebé ita bele instala no uza iha iPhone.
               Download aplikasaun LIX-R361 hosi App Store.
             </p>
             <a
