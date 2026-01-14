@@ -45,7 +45,7 @@ export default function PrivacyPage() {
             Ami sei uza ita-nia dadus atu:
           </p>
           <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-gray-200">
-            <li>Uza hodi hadi'ak kualidade resposta hosi asistente AI ba ita-nia pergunta sira;</li>
+            <li>Hadi'ak kualidade resposta hosi asistente AI ba ita-nia pergunta sira;</li>
             <li>Manten iha istóriku chat atu foti filafali no disponibiliza ba ita-boot;</li>
             <li>Halo investigasaun hodi hadi'ak kualidade servisu Labadain Chat nian;</li>
             <li>Haforsa seguransa no prevensaun ba uza la tuir objetivu hosi aplikasaun nian.</li>
