@@ -22,8 +22,8 @@ export default function PrivacyPage() {
           <p className="mb-4 text-sm leading-relaxed text-gray-200">
             Labadain Chat (Labadain LIX-R361) nu'udar asistente AI ida-ne'ebé dezenvolve hosi Labadain Innovation eXperience (LIX)
             atu fasilita konversa iha Tetun. Dokumentu ida-ne'e esplika saida mak ami
-            halo ho ita-nia dadus ne'ebé ami kolleta. Se ita la konkorda ho politika ida-ne'e,
-            favór lalika uza aplikasaun ne'e.
+            halo ho ita-nia dadus ne'ebé ami kolleta. Karik ita-boot la konkorda ho politika ida-ne'e,
+            favór lalika uza Labadain Chat.
           </p>
 
           <h2 className="mt-6 mb-2 text-lg font-semibold text-white">
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
             <li>Hadi'ak kualidade resposta hosi asistente AI ba ita-nia pergunta sira;</li>
             <li>Manten iha istóriku chat atu foti filafali no disponibiliza ba ita-boot;</li>
             <li>Halo investigasaun hodi hadi'ak kualidade servisu Labadain Chat nian;</li>
-            <li>Haforsa seguransa no prevensaun ba uza la tuir objetivu hosi aplikasaun nian.</li>
+            <li>Haforsa seguransa no prevensaun ba uzu la tuir objetivu hosi aplikasaun nian.</li>
           </ul>
 
           <h2 className="mt-6 mb-2 text-lg font-semibold text-white">
@@ -83,10 +83,7 @@ export default function PrivacyPage() {
           </h2>
           <p className="mb-1 text-sm leading-relaxed text-gray-200">
             Se iha dúvida ka komentáriu kona-ba politika privasidade ida-ne'e,
-            ita bele kontaktu ami liuhusi:
-          </p>
-          <p className="mb-8 text-sm text-gray-200">
-            Email: apoiu@labadain.com
+            ita bele kontaktu ami liuhusi <a href="mailto:apoiu@labadain.com">apoiu@labadain.com</a>.
           </p>
 
           <p className="text-xs text-gray-500">
