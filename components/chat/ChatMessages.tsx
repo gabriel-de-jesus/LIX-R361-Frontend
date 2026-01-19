@@ -216,6 +216,7 @@ function ChatInputWithSuggestions({
   const [toolDropdownOpen, setToolDropdownOpen] = React.useState(false);
   const [selectedTools, setSelectedTools] = React.useState<string[]>([]);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -259,7 +260,14 @@ function ChatInputWithSuggestions({
     });
   };
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  React.useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [input]);
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const trimmed = value.trim();
 
@@ -280,6 +288,38 @@ function ChatInputWithSuggestions({
     setTextError(
       "Ita-boot nia testu liu tiha ona limite. Labadain rekomenda atu ita-boot bele tau ba fixeiru ida depois karrega ba iha plataforma."
     );
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      // Cmd/Ctrl + Enter: insert newline without submitting
+      e.preventDefault();
+      const target = e.currentTarget;
+      const { selectionStart, selectionEnd, value } = target;
+      const before = value.slice(0, selectionStart);
+      const after = value.slice(selectionEnd);
+      const newValue = `${before}\n${after}`;
+      onChangeInput(newValue);
+
+      // restore caret just after the inserted newline
+      requestAnimationFrame(() => {
+        const pos = before.length + 1;
+        target.selectionStart = target.selectionEnd = pos;
+      });
+    } else if (
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      !e.metaKey &&
+      !e.ctrlKey &&
+      !e.altKey
+    ) {
+      // Plain Enter: submit the form
+      e.preventDefault();
+      const form = e.currentTarget.form;
+      if (form) {
+        form.requestSubmit();
+      }
+    }
   };
 
   // PopupBox for error/info messages
@@ -330,14 +370,16 @@ function PopupBox({ open, message, onClose }: { open: boolean; message: string; 
           disabled={loading}
         />
         <div className="relative w-full bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl px-3 pt-2 pb-3">
-          {/* First line: text input */}
+          {/* First line: text input (multiline, auto-resize) */}
           <div className="w-full mb-4">
-            <input
-              type="text"
+            <textarea
+              ref={textareaRef}
               value={input}
               onChange={handleTextChange}
+              onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className="w-full bg-transparent border-none focus:outline-none text-white placeholder-gray-500 text-lg"
+              rows={1}
+              className="w-full bg-transparent border-none focus:outline-none text-white placeholder-gray-500 text-lg resize-none leading-snug"
               disabled={loading}
             />
           </div>
@@ -656,7 +698,7 @@ export default function ChatMessages({
                       )}
                     </div>
                     <div className="flex-1 pt-1">
-                      <div className="text-white text-base leading-relaxed">
+                      <div className="text-white text-base leading-relaxed whitespace-pre-wrap">
                         {msg.content}
                       </div>
                     </div>
