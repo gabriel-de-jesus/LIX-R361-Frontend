@@ -41,7 +41,7 @@ const INPUT_HELPER_TEXT = (
     </span>
   </>
 );
-const MAX_WORDS = 120;
+const MAX_WORDS = 2500;
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -221,8 +221,8 @@ function ChatInputWithSuggestions({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 15 * 1024) {
-        setFileError('Ita-nia fixeiru la konsege karrega ho susesu tanba tamañu liu tiha ona 15KB.');
+      if (file.size > 256 * 1024) {
+        setFileError('Ita-nia fixeiru la konsege karrega ho susesu tanba tamañu liu tiha ona 256KB.');
         e.target.value = '';
         setSelectedFile(null);
       } else {
@@ -454,7 +454,7 @@ function PopupBox({ open, message, onClose }: { open: boolean; message: string; 
                           d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3 3 0 014.24 4.24L9.88 16.12a1 1 0 01-1.41-1.41l7.78-7.78"
                         />
                       </svg>
-                      Karrega fixeiru (Max. 15KB)
+                      Karrega fixeiru (Max. 256KB)
                     </button>
                   </div>
                 )}
