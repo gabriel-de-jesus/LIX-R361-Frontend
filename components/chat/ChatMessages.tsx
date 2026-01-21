@@ -36,7 +36,7 @@ const INPUT_HELPER_TEXT = (
         <span role="img" aria-label="iOS">
           
         </span>
-        <span>Download iOS App</span>
+        <span>Download iOS</span>
       </a>
     </span>
   </>
