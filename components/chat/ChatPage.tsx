@@ -40,13 +40,10 @@ export default function ChatPage() {
     }
   }, []);
 
-  // Show a one-time popup announcing the iOS app.
+  // Show popup announcing the mobile apps on every full page load.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const dismissed = window.localStorage.getItem("labadain_ios_app_popup_dismissed");
-    if (!dismissed) {
-      setShowIosAppPopup(true);
-    }
+    setShowIosAppPopup(true);
   }, []);
 
   // Fetch chats for the user
@@ -81,9 +78,6 @@ export default function ChatPage() {
 
   const dismissIosAppPopup = () => {
     setShowIosAppPopup(false);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("labadain_ios_app_popup_dismissed", "1");
-    }
   };
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
@@ -725,7 +719,7 @@ export default function ChatPage() {
       {/* One-time popup announcing the iOS app */}
       {showIosAppPopup && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/70 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-[#1A1A1A] border border-[#2A2A2A] shadow-2xl p-6 relative">
+          <div className="w-full max-w-md rounded-2xl bg-[#1A1A1A] border border-[#2A2A2A] shadow-2xl p-6 relative flex flex-col items-center justify-center">
             <button
               type="button"
               onClick={dismissIosAppPopup}
@@ -755,17 +749,45 @@ export default function ChatPage() {
               <h2 className="text-xl font-semibold text-white">Labadain LIX-R361</h2>
             </div>
             <p className="text-sm text-gray-300 mb-4 text-center">
-              Labadain iha ona iOS ne'ebé ita bele instala no uza iha iPhone.
-              Download aplikasaun LIX-R361 hosi App Store.
+              Labadain iha ona iOS no Android ne'ebé ita bele instala no uza iha telemóvel.
+              Download aplikasaun LIX-R361 hosi App Store ka Google Play.
             </p>
-            <a
-              href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full px-4 py-3 text-center text-sm font-medium rounded-xl bg-white text-black hover:bg-gray-100 transition-colors mb-2"
-            >
-              Loke iha App Store
-            </a>
+            <div className="grid gap-2 mb-2">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.labadain.mobile"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 text-center text-sm font-medium rounded-xl bg-white text-black hover:bg-gray-100 transition-colors"
+                aria-label="Loke iha Google Play"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  className="w-5 h-5"
+                  aria-hidden="true"
+                >
+                  <path fill="currentColor" d="M48 56c0-16.7 13.5-30.2 30.2-30.2 5.5 0 10.9 1.5 15.7 4.4l256.3 150.5L128.7 256 48 210.1V56zm0 96.5v206.9l80.7-45.9L48 256v-103.5zm46.5 271.6c-4.8 2.9-10.2 4.4-15.7 4.4C61.5 428.5 48 415 48 398.3V301.9l80.7 45.9L350.2 331 94.5 424.1zM383.3 312.7 162.5 256l220.8-56.7 41.9 24.6c7.6 4.5 12.3 12.6 12.3 21.5s-4.7 17.1-12.3 21.5l-41.9 24.6z" />
+                </svg>
+                <span>Loke iha Google Play</span>
+              </a>
+              <a
+                href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 text-center text-sm font-medium rounded-xl bg-white text-black hover:bg-gray-100 transition-colors"
+                aria-label="Loke iha App Store"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 384 512"
+                  className="w-5 h-5"
+                  aria-hidden="true"
+                >
+                  <path fill="currentColor" d="M318.7 268.7c-.3-36.1 16.1-63.4 49.3-84.2-18.6-26.9-46.8-41.9-84.1-44.7-35.1-2.8-73.6 20.4-87.7 20.4-14.7 0-48.3-19.6-74.8-19.1-48.3 .7-99.8 28.2-126.5 71.6-54.1 87.6-13.8 216.8 38.9 287.8 25.8 34.7 56.6 73.8 96.8 72.4 38.5-1.5 53.1-24.9 99.7-24.9 45.4 0 58.6 24.9 100.5 24.1 41.6-.7 68.1-36.9 93.7-71.8 29.6-42.4 41.8-83.6 42.3-85.7-1-.5-81-31.1-81.6-123.9zM255.9 87.7c27.8-33.6 23.2-64.1 22.4-75.1-24.5 1-53 16.7-69.1 35.4-17.7 20.1-28.2 44.9-25.9 74.1 26.5 2 51.3-11.1 72.6-34.4z" />
+                </svg>
+                <span>Loke iha App Store</span>
+              </a>
+            </div>
             <button
               type="button"
               onClick={dismissIosAppPopup}

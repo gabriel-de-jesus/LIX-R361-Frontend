@@ -13,7 +13,7 @@ const INPUT_HELPER_TEXT = (
   <>
     Labadain bele fó resposta ne'ebé ladún loos. Konfirma filafali informasaun importante sira.
     <br />
-    <span className="text-xs">
+    <span className="mt-1 flex flex-wrap items-center justify-center gap-2 text-xs">
       {"© "}
       {new Date().getFullYear()}
       {" LIX"}
@@ -27,17 +27,42 @@ const INPUT_HELPER_TEXT = (
         Polítika Privasidade
       </a>
       {" | "}
-      <a
-        href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-1 underline"
-      >
-        <span role="img" aria-label="iOS">
-          
-        </span>
-        <span>Download iOS</span>
-      </a>
+      <span className="inline-flex items-center gap-2">
+        <a
+          href="https://play.google.com/store/apps/details?id=com.labadain.mobile"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 underline"
+          aria-label="Download iha Google Play"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            className="w-4 h-4"
+            aria-hidden="true"
+          >
+            <path fill="currentColor" d="M48 56c0-16.7 13.5-30.2 30.2-30.2 5.5 0 10.9 1.5 15.7 4.4l256.3 150.5L128.7 256 48 210.1V56zm0 96.5v206.9l80.7-45.9L48 256v-103.5zm46.5 271.6c-4.8 2.9-10.2 4.4-15.7 4.4C61.5 428.5 48 415 48 398.3V301.9l80.7 45.9L350.2 331 94.5 424.1zM383.3 312.7 162.5 256l220.8-56.7 41.9 24.6c7.6 4.5 12.3 12.6 12.3 21.5s-4.7 17.1-12.3 21.5l-41.9 24.6z" />
+          </svg>
+          <span>Google Play</span>
+        </a>
+        <a
+          href="https://apps.apple.com/mn/app/labadain-chat/id6757595339"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 underline"
+          aria-label="Download iha App Store"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 384 512"
+            className="w-4 h-4"
+            aria-hidden="true"
+          >
+            <path fill="currentColor" d="M318.7 268.7c-.3-36.1 16.1-63.4 49.3-84.2-18.6-26.9-46.8-41.9-84.1-44.7-35.1-2.8-73.6 20.4-87.7 20.4-14.7 0-48.3-19.6-74.8-19.1-48.3 .7-99.8 28.2-126.5 71.6-54.1 87.6-13.8 216.8 38.9 287.8 25.8 34.7 56.6 73.8 96.8 72.4 38.5-1.5 53.1-24.9 99.7-24.9 45.4 0 58.6 24.9 100.5 24.1 41.6-.7 68.1-36.9 93.7-71.8 29.6-42.4 41.8-83.6 42.3-85.7-1-.5-81-31.1-81.6-123.9zM255.9 87.7c27.8-33.6 23.2-64.1 22.4-75.1-24.5 1-53 16.7-69.1 35.4-17.7 20.1-28.2 44.9-25.9 74.1 26.5 2 51.3-11.1 72.6-34.4z" />
+          </svg>
+          <span>App Store</span>
+        </a>
+      </span>
     </span>
   </>
 );
