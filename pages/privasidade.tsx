@@ -16,7 +16,7 @@ export default function PrivacyPage() {
             Polítika Privasidade Labadain Chat
           </h1>
           <p className="mb-4 text-sm text-gray-300">
-            Atualiza: 10 Janeiru 2026
+            Atualiza: 08 Fevereiru 2026
           </p>
 
           <p className="mb-4 text-sm leading-relaxed text-gray-200">
@@ -57,6 +57,7 @@ export default function PrivacyPage() {
           <p className="mb-4 text-sm leading-relaxed text-gray-200">
             Ami la fahe ita-nia dadus pesoál ba parte terseiru atu halo marketing
             privadu. Dadus bele partilla ho servisu tékniku de'it atu halo analiza no hadi'ak Labadain Chat nia funsionalidade sira.
+            Bainhira ami uza ita-nia konversa sira ba publikasaun sientífika, ami sei anonimiza ita-nia utilizadór hodi proteje identidade pesoál.
           </p>
 
           <h2 className="mt-6 mb-2 text-lg font-semibold text-white">
