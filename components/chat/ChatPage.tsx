@@ -40,10 +40,21 @@ export default function ChatPage() {
     }
   }, []);
 
-  // Show popup announcing the mobile apps on every full page load.
+  // Show popup announcing the mobile apps only on first visit.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setShowIosAppPopup(true);
+
+    try {
+      const storage = window.localStorage;
+      const alreadyShown = storage.getItem("labadain_ios_popup_shown");
+      if (!alreadyShown) {
+        setShowIosAppPopup(true);
+        storage.setItem("labadain_ios_popup_shown", "1");
+      }
+    } catch {
+      // If localStorage is not available, fall back to showing once per load.
+      setShowIosAppPopup(true);
+    }
   }, []);
 
   // Fetch chats for the user
